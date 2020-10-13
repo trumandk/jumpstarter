@@ -11,20 +11,23 @@ COPY main.go main.go
 #RUN go get -d -v
 RUN CGO_ENABLED=0 go build -o /main
 
-FROM alpine
+FROM alpine AS tftp 
 RUN apk add --no-cache wget
+RUN apk add --no-cache syslinux
 WORKDIR /files/
 RUN wget https://stable.release.flatcar-linux.net/amd64-usr/current/flatcar_production_pxe.vmlinuz
 RUN wget https://stable.release.flatcar-linux.net/amd64-usr/current/flatcar_production_pxe_image.cpio.gz
+
+FROM scratch
+WORKDIR /files/
+COPY --from=tftp /files/flatcar_production_pxe.vmlinuz .
+COPY --from=tftp /files/flatcar_production_pxe_image.cpio.gz .
+COPY pxe-config.ign .
 WORKDIR /tftp/
-RUN apk add --no-cache syslinux
-RUN apk add --no-cache mlocate
-RUN updatedb
-RUN locate ldlinux.c32
-RUN cp /usr/share/syslinux/lpxelinux.0 .
-RUN cp /usr/share/syslinux/ldlinux.c32 .
+COPY --from=tftp /usr/share/syslinux/lpxelinux.0 .
+COPY --from=tftp /usr/share/syslinux/ldlinux.c32 .
+WORKDIR /tftp/pxelinux.cfg/
+COPY default default
+WORKDIR /tftp/
 COPY --from=builder /main /tftp/main
-RUN mkdir pxelinux.cfg/
-COPY default pxelinux.cfg/default
-COPY pxe-config.ign /files/pxe-config.ign
 ENTRYPOINT ["/tftp/main"]

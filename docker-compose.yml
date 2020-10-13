@@ -1,5 +1,5 @@
 version: '3.3'
 services:
-  godns:
+  jumpstarter:
     build: .
     network_mode: host
