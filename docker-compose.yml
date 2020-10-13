@@ -1,0 +1,5 @@
+version: '3.3'
+services:
+  godns:
+    build: .
+    network_mode: host

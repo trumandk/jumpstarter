@@ -1,0 +1,7 @@
+default flatcar-http
+prompt 1
+timeout 15
+
+LABEL flatcar-http
+LINUX http://1.2.3.4/flatcar_production_pxe.vmlinuz
+APPEND initrd=http://1.2.3.4/flatcar_production_pxe_image.cpio.gz rootfstype=tmpfs ignition.config.url=http://1.2.3.4/pxe-config.ign flatcar.first_boot=1 console=tty0 flatcar.autologin=tty1 

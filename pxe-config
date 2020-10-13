@@ -1,0 +1,49 @@
+etcd:
+  version: 3.1.5
+  name: "etcdserver"
+  initial_cluster: "etcdserver=http://10.0.0.101:2380"
+  initial_advertise_peer_urls: "http://10.0.0.101:2380"
+  advertise_client_urls: "http://10.0.0.101:2379"
+  listen_client_urls: "http://0.0.0.0:2379,http://0.0.0.0:4001"
+  listen_peer_urls: "http://0.0.0.0:2380"
+systemd:
+  units:
+    - name: etcd-member.service
+      enable: true
+      dropins:
+        - name: conf1.conf
+          contents: |
+            [Service]
+            Environment="ETCD_NAME=etcdserver"
+systemd:
+  units:
+    - name: docker-tcp.socket
+      enable: yes
+      mask: false
+      contents: |
+        [Unit]
+        Description=Docker Socket for the API
+
+        [Socket]
+        ListenStream=2375
+        BindIPv6Only=both
+        Service=docker.service
+
+        [Install]
+        WantedBy=sockets.target
+    - name: enable-docker-tcp.service
+      enable: true
+      contents: |
+        [Unit]
+        Description=Enable the Docker Socket for the API
+
+        [Service]
+        Type=oneshot
+        ExecStart=/usr/bin/systemctl enable docker-tcp.socket
+
+
+passwd:
+  users:
+    - name: core
+      ssh_authorized_keys:
+        - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCrJDQj7oJfu0Tv7BJI2es8YVaugLaOEGdrBq2UJi6vPFdj7gYEHw40HM+OEB3qekzNZ9+PJ2XbGxkcHkq00PN1QL4Hl9qyxWJ+o3On627IZd7bu0mJdDWDRMpPrnBVFrg5dNGYd2V6LUDd+rosoNmTYfLW6u9WJWViU5px1jXJ9om0cOeiC5BCSGBZqeATZoZ7O+68yxAJYwJJARz5YSqZLt5sXipnuU7KnSXD15+CprGByK8oXtQ9I+xvPopg4XJdERCTHbuhQRWVv9HqJMAKjAaAKdlLuMU4cMbnVFfuz6xlYFzhv+Sje1Q6zsHdI2ADVtKtoNYSiicLMHjR6nY5
