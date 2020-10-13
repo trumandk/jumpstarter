@@ -1,4 +1,5 @@
 all:
+	gofmt -w main.go
 	./ct <pxe-config > pxe-config.ign
 	docker-compose stop
 	docker-compose build
