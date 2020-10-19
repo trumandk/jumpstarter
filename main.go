@@ -62,16 +62,17 @@ func readHandler(filename string, r io.ReaderFrom) error {
 
 func main() {
 	http.Handle("/", http.FileServer(http.Dir("/files/")))
+	/*
 	go func() {
-		http.ListenAndServe(":80", nil)
-	}()
+		// use nil in place of handler to disable read or write operations
+		s := tftp.NewServer(readHandler, nil)
+		s.SetTimeout(5 * time.Second)  // optional
+		err := s.ListenAndServe(":69") // blocks until s.Shutdown() is called
+		if err != nil {
+			fmt.Fprintf(os.Stdout, "server: %v\n", err)
+			os.Exit(1)
+		}
+	}()*/
+	http.ListenAndServe(":8080", nil)
 
-	// use nil in place of handler to disable read or write operations
-	s := tftp.NewServer(readHandler, nil)
-	s.SetTimeout(5 * time.Second)  // optional
-	err := s.ListenAndServe(":69") // blocks until s.Shutdown() is called
-	if err != nil {
-		fmt.Fprintf(os.Stdout, "server: %v\n", err)
-		os.Exit(1)
-	}
 }

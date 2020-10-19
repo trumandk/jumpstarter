@@ -5,6 +5,7 @@ RUN apk add --no-cache git
 WORKDIR /app/
 
 RUN go get github.com/pin/tftp
+
 #RUN go get github.com/miekg/dns
 #RUN go get github.com/sparrc/go-ping
 COPY main.go main.go
@@ -23,6 +24,7 @@ WORKDIR /files/
 COPY --from=tftp /files/flatcar_production_pxe.vmlinuz .
 COPY --from=tftp /files/flatcar_production_pxe_image.cpio.gz .
 COPY pxe-config.ign .
+COPY ssh ssh
 WORKDIR /tftp/
 COPY --from=tftp /usr/share/syslinux/lpxelinux.0 .
 COPY --from=tftp /usr/share/syslinux/ldlinux.c32 .
