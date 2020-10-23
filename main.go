@@ -62,7 +62,7 @@ func readHandler(filename string, r io.ReaderFrom) error {
 
 func main() {
 	http.Handle("/", http.FileServer(http.Dir("/files/")))
-	/*
+	
 	go func() {
 		// use nil in place of handler to disable read or write operations
 		s := tftp.NewServer(readHandler, nil)
@@ -72,7 +72,7 @@ func main() {
 			fmt.Fprintf(os.Stdout, "server: %v\n", err)
 			os.Exit(1)
 		}
-	}()*/
+	}()
 	http.ListenAndServe(":8080", nil)
 
 }
