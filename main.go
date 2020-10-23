@@ -73,6 +73,6 @@ func main() {
 			os.Exit(1)
 		}
 	}()
-	http.ListenAndServe(":8080", nil)
+	http.ListenAndServe(":80", nil)
 
 }
