@@ -1,0 +1,9 @@
+version: '3.3'
+services:
+  httpd:
+    image: httpd:latest
+    network_mode: host
+  httpd2:
+    image: httpd:latest
+  httpd3:
+    image: httpd:latest
