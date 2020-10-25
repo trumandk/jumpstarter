@@ -73,38 +73,72 @@ storage:
     - path: /etc/ssh/ssh_host_dsa_key
       filesystem: root
       contents:
-        remote:
-          url: http://192.168.1.2/ssh/ssh_host_dsa_key
+        inline: |
+          -----BEGIN OPENSSH PRIVATE KEY-----
+          b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAABsQAAAAdzc2gtZH
+          NzAAAAgQCSRgVMXlwAOhfcCuGArY332Sha0mmQUVcVUzHX/nDkfenZ//4yoCOmOY0LlAwL
+          58LHCuAnEqjc6KILDy8fIdwvFEKppRhd0V83KtfY0Wbt2ZXf2gLDODf3B4/RWp+AzWVS/r
+          tL0aLZNJLTC64n0q4XBzjb67JIY+XH0oJsA5D24wAAABUAiLSiyWUV7mAvH1O8gz8pq6sF
+          KLsAAACAQnWZVRX8AaaiE/HJapGbyJMfhkOcquArGUZLwO17ki5AE/kcrwyH/Rp3Sfydoy
+          w6vQ4cf0u2ybJ+hGFmQTosD4PQwtAQy6RN677BTO13bYUSQEW0pr40zELsOmwVG+mIFTQg
+          GNJ44hLDCs7qkY7vKRTZL0jSoFrB5o95ysMeD8AAAACAaXTFqros1T1iAE60S6+gxuWeKQ
+          bbKClHO3z2BUB0pTu2uRbsSh6hXigza3XaUlj7TkXU2/uxYlALgoFC65syTK/5nGTRPq9M
+          4kRyZFcLNQrtNBVw25dX5iBqkU64y6ebT+yHdkYYrh03DeON7OGvzLOukUwl2yR7stIdP8
+          nt0bwAAAHoGAxDchgMQ3IAAAAHc3NoLWRzcwAAAIEAkkYFTF5cADoX3ArhgK2N99koWtJp
+          kFFXFVMx1/5w5H3p2f/+MqAjpjmNC5QMC+fCxwrgJxKo3OiiCw8vHyHcLxRCqaUYXdFfNy
+          rX2NFm7dmV39oCwzg39weP0VqfgM1lUv67S9Gi2TSS0wuuJ9KuFwc42+uySGPlx9KCbAOQ
+          9uMAAAAVAIi0osllFe5gLx9TvIM/KaurBSi7AAAAgEJ1mVUV/AGmohPxyWqRm8iTH4ZDnK
+          rgKxlGS8Dte5IuQBP5HK8Mh/0ad0n8naMsOr0OHH9LtsmyfoRhZkE6LA+D0MLQEMukTeu+
+          wUztd22FEkBFtKa+NMxC7DpsFRvpiBU0IBjSeOISwwrO6pGO7ykU2S9I0qBaweaPecrDHg
+          /AAAAAgGl0xaq6LNU9YgBOtEuvoMblnikG2ygpRzt89gVAdKU7trkW7EoeoV4oM2t12lJY
+          +05F1Nv7sWJQC4KBQuubMkyv+Zxk0T6vTOJEcmRXCzUK7TQVcNuXV+YgapFOuMunm0/sh3
+          ZGGK4dNw3jjezhr8yzrpFMJdske7LSHT/J7dG8AAAAFAdNpNCqhG+QJT8gBcRZbSi0Sn5I
+          AAAADnJvb3RAbG9jYWxob3N0AQIDBAU=
+          -----END OPENSSH PRIVATE KEY-----
       mode: 0644
     - path: /etc/ssh/ssh_host_dsa_key.pub
       filesystem: root
       contents:
-        remote:
-          url: http://192.168.1.2/ssh/ssh_host_dsa_key.pub
+        inline: |
+          ssh-dss AAAAB3NzaC1kc3MAAACBAJJGBUxeXAA6F9wK4YCtjffZKFrSaZBRVxVTMdf+cOR96dn//jKgI6Y5jQuUDAvnwscK4CcSqNzoogsPLx8h3C8UQqmlGF3RXzcq19jRZu3Zld/aAsM4N/cHj9Fan4DNZVL+u0vRotk0ktMLrifSrhcHONvrskhj5cfSgmwDkPbjAAAAFQCItKLJZRXuYC8fU7yDPymrqwUouwAAAIBCdZlVFfwBpqIT8clqkZvIkx+GQ5yq4CsZRkvA7XuSLkAT+RyvDIf9GndJ/J2jLDq9Dhx/S7bJsn6EYWZBOiwPg9DC0BDLpE3rvsFM7XdthRJARbSmvjTMQuw6bBUb6YgVNCAY0njiEsMKzuqRju8pFNkvSNKgWsHmj3nKwx4PwAAAAIBpdMWquizVPWIATrRLr6DG5Z4pBtsoKUc7fPYFQHSlO7a5FuxKHqFeKDNrddpSWPtORdTb+7FiUAuCgULrmzJMr/mcZNE+r0ziRHJkVws1Cu00FXDbl1fmIGqRTrjLp5tP7Id2RhiuHTcN443s4a/Ms66RTCXbJHuy0h0/ye3RvA== root@localhost
       mode: 0644
     - path: /etc/ssh/ssh_host_ecdsa_key
       filesystem: root
       contents:
-        remote:
-          url: http://192.168.1.2/ssh/ssh_host_ecdsa_key
+        inline: |
+          -----BEGIN OPENSSH PRIVATE KEY-----
+          b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAaAAAABNlY2RzYS
+          1zaGEyLW5pc3RwMjU2AAAACG5pc3RwMjU2AAAAQQQGZWKV0qMkKA5oJh28Oa8jwCTzDCHB
+          CTeOdigg1mUcrgqss1cKk9HKKKI7ufkjUXVGQrky6M41wHkjJ1UjE4u8AAAAqH5J/v5+Sf
+          7+AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBAZlYpXSoyQoDmgm
+          Hbw5ryPAJPMMIcEJN452KCDWZRyuCqyzVwqT0coooju5+SNRdUZCuTLozjXAeSMnVSMTi7
+          wAAAAhAOVbVHVJHbni7mRAZAVy1esvmksT4+N3AHBnyX/WuQroAAAADnJvb3RAbG9jYWxo
+          b3N0AQ==
+          -----END OPENSSH PRIVATE KEY-----
       mode: 0600
     - path: /etc/ssh/ssh_host_ecdsa_key.pub
       filesystem: root
       contents:
-        remote:
-          url: http://192.168.1.2/ssh/ssh_host_ecdsa_key.pub
+        inline: |
+          ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBAZlYpXSoyQoDmgmHbw5ryPAJPMMIcEJN452KCDWZRyuCqyzVwqT0coooju5+SNRdUZCuTLozjXAeSMnVSMTi7w= root@localhost
       mode: 0644
     - path: /etc/ssh/ssh_host_ed25519_key
       filesystem: root
       contents:
-        remote:
-          url: http://192.168.1.2/ssh/ssh_host_ed25519_key
+        inline: |
+          -----BEGIN OPENSSH PRIVATE KEY-----
+          b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
+          QyNTUxOQAAACA2vO91FqU+Qq8J1ZU3WCQF2cgX7Ji5jusjqTcqEQ0VCQAAAJgWI1kdFiNZ
+          HQAAAAtzc2gtZWQyNTUxOQAAACA2vO91FqU+Qq8J1ZU3WCQF2cgX7Ji5jusjqTcqEQ0VCQ
+          AAAEBEYhULl2wMl6GEYgD/Yx7w1ozJWChH8KtA7gGsFoYDaDa873UWpT5CrwnVlTdYJAXZ
+          yBfsmLmO6yOpNyoRDRUJAAAADnJvb3RAbG9jYWxob3N0AQIDBAUGBw==
+          -----END OPENSSH PRIVATE KEY-----
       mode: 0600
     - path: /etc/ssh/ssh_host_ed25519_key.pub
       filesystem: root
       contents:
-        remote:
-          url: http://192.168.1.2/ssh/ssh_host_ed25519_key.pub
+        inline: |
+          ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDa873UWpT5CrwnVlTdYJAXZyBfsmLmO6yOpNyoRDRUJ root@localhost
       mode: 0644
     - path: /etc/ssh/ssh_host_rsa_key
       filesystem: root
