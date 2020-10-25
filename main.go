@@ -71,14 +71,16 @@ func dockercompose() {
 	}
 
 	for _, f := range nodes {
-		fmt.Println(f.Name())
+		if f.Name() != "env" {
+			fmt.Println(f.Name())
 
-		out, err := exec.Command("/usr/bin/docker-compose", "-p", f.Name(), "-H", "tcp://"+f.Name()+":2375", "-f", "docker/"+f.Name(), "up", "-d", "--remove-orphans").CombinedOutput()
+			out, err := exec.Command("/usr/bin/docker-compose", "-p", f.Name(), "--env-file", "./docker/env", "-H", "tcp://"+f.Name()+":2375", "-f", "docker/"+f.Name(), "up", "-d", "--remove-orphans").CombinedOutput()
 
-		if err != nil {
-			fmt.Printf("Error updating:%s Message:%s", f.Name(), err)
-			output := string(out[:])
-			fmt.Println(output)
+			if err != nil {
+				fmt.Printf("Error updating:%s Message:%s", f.Name(), err)
+				output := string(out[:])
+				fmt.Println(output)
+			}
 		}
 	}
 

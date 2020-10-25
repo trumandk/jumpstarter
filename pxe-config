@@ -1,18 +1,5 @@
 systemd:
   units:
-    - name: etcd-member.service
-      enable: true
-      dropins:
-        - name: conf1.conf
-          contents: |
-            [Service]
-            Environment="ETCD_NAME=etcdserver"
-    - name: getty@.service
-      dropins:
-        - name: no-disallocate.conf
-          contents: |
-            [Service]
-            TTYVTDisallocate=no
     - name: docker-tcp.socket
       enable: yes
       mask: false
@@ -36,7 +23,6 @@ systemd:
         [Service]
         Type=oneshot
         ExecStart=/usr/bin/systemctl enable docker-tcp.socket
-
 storage:
   files:
     - path: /etc/ssh/sshd_config

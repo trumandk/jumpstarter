@@ -1,9 +1,7 @@
 version: '3.3'
 services:
   httpd:
-    image: httpd:latest
+    image: "httpd:${TAG}"
     network_mode: host
   httpd2:
-    image: httpd:latest
-  httpd3:
-    image: httpd:latest
+    image: "httpd:${TAG}"
