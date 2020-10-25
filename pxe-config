@@ -1,11 +1,16 @@
 etcd:
-  version: 3.4.0
+  version: 3.1.6
   name: "etcdserver"
-  initial_cluster: "etcdserver=http://1.2.3.4:2380"
-  initial_advertise_peer_urls: "http://1.2.3.4:2380"
-  advertise_client_urls: "http://1.2.3.4:2379"
-  listen_client_urls: "http://1.2.3.4:2379"
-  listen_peer_urls: "http://1.2.3.4:2380"
+  # generate a new token for each unique cluster from https://discovery.etcd.io/new?size=3
+  # specify the initial size of your cluster with ?size=X
+  discovery: https://discovery.etcd.io/7a25a3b8c8d407a8ee399ef05625688e
+  # multi_region and multi_cloud deployments need to use {PUBLIC_IPV4}
+  advertise_client_urls: http://192.168.1.133:2379,http://192.168.1.133:4001
+  initial_advertise_peer_urls: http://192.168.1.133:2380
+  # listen on both the official ports and the legacy ports
+  # legacy ports can be omitted if your application doesn't depend on them
+  listen_client_urls: http://0.0.0.0:2379,http://0.0.0.0:4001
+  listen_peer_urls: http://192.168.1.133:2380
 systemd:
   units:
     - name: etcd-member.service
@@ -15,6 +20,12 @@ systemd:
           contents: |
             [Service]
             Environment="ETCD_NAME=etcdserver"
+    - name: getty@.service
+      dropins:
+        - name: no-disallocate.conf
+          contents: |
+            [Service]
+            TTYVTDisallocate=no
 systemd:
   units:
     - name: docker-tcp.socket
@@ -56,53 +67,71 @@ storage:
           PermitRootLogin no
           AllowUsers core
           AuthenticationMethods publickey
+    - path: /etc/modules-load.d/br_netfilter.conf
+      filesystem: root
+      mode: 0644
+      contents:
+        inline: |
+          br_netfilter
+    - path: /etc/modules-load.d/nf.conf
+      filesystem: root
+      mode: 0644
+      contents:
+        inline: |
+          nf_conntrack
+    - path: /etc/sysctl.d/nf.conf
+      filesystem: root
+      mode: 0644
+      contents:
+        inline: |
+          net.netfilter.nf_conntrack_max=131072
     - path: /etc/ssh/ssh_host_dsa_key
       filesystem: root
       contents:
         remote:
-          url: http://1.2.3.4/ssh/ssh_host_dsa_key
+          url: http://192.168.1.2/ssh/ssh_host_dsa_key
       mode: 0644
     - path: /etc/ssh/ssh_host_dsa_key.pub
       filesystem: root
       contents:
         remote:
-          url: http://1.2.3.4/ssh/ssh_host_dsa_key.pub
+          url: http://192.168.1.2/ssh/ssh_host_dsa_key.pub
       mode: 0644
     - path: /etc/ssh/ssh_host_ecdsa_key
       filesystem: root
       contents:
         remote:
-          url: http://1.2.3.4/ssh/ssh_host_ecdsa_key
+          url: http://192.168.1.2/ssh/ssh_host_ecdsa_key
       mode: 0600
     - path: /etc/ssh/ssh_host_ecdsa_key.pub
       filesystem: root
       contents:
         remote:
-          url: http://1.2.3.4/ssh/ssh_host_ecdsa_key.pub
+          url: http://192.168.1.2/ssh/ssh_host_ecdsa_key.pub
       mode: 0644
     - path: /etc/ssh/ssh_host_ed25519_key
       filesystem: root
       contents:
         remote:
-          url: http://1.2.3.4/ssh/ssh_host_ed25519_key
+          url: http://192.168.1.2/ssh/ssh_host_ed25519_key
       mode: 0600
     - path: /etc/ssh/ssh_host_ed25519_key.pub
       filesystem: root
       contents:
         remote:
-          url: http://1.2.3.4/ssh/ssh_host_ed25519_key.pub
+          url: http://192.168.1.2/ssh/ssh_host_ed25519_key.pub
       mode: 0644
     - path: /etc/ssh/ssh_host_rsa_key
       filesystem: root
       contents:
         remote:
-          url: http://1.2.3.4/ssh/ssh_host_rsa_key
+          url: http://192.168.1.2/ssh/ssh_host_rsa_key
       mode: 0600
     - path: /etc/ssh/ssh_host_rsa_key.pub
       filesystem: root
       contents:
         remote:
-          url: http://1.2.3.4/ssh/ssh_host_rsa_key.pub
+          url: http://192.168.1.2/ssh/ssh_host_rsa_key.pub
       mode: 0644
 
 passwd:
