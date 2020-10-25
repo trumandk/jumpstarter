@@ -3,3 +3,5 @@ services:
   jumpstarter:
     build: .
     network_mode: host
+    volumes:
+      - ./docker/:/tftp/docker/

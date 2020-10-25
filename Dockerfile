@@ -32,5 +32,4 @@ COPY --from=tftp /usr/share/syslinux/ldlinux.c32 .
 WORKDIR /tftp/pxelinux.cfg/
 WORKDIR /tftp/
 COPY --from=builder /main /tftp/main
-COPY docker/ docker/
 ENTRYPOINT ["/tftp/main"]

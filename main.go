@@ -5,13 +5,13 @@ import (
 	"fmt"
 	"github.com/pin/tftp"
 	"io"
+	"io/ioutil"
+	"log"
 	"net/http"
-    "os/exec"
 	"os"
+	"os/exec"
 	"strings"
 	"time"
-	    "io/ioutil"
-     "log"
 )
 
 func defaultFile(ip string) *bytes.Buffer {
@@ -65,36 +65,35 @@ func readHandler(filename string, r io.ReaderFrom) error {
 
 func dockercompose() {
 
-nodes, err := ioutil.ReadDir("./docker/")
-    if err != nil {
-        log.Fatal(err)
-    }
+	nodes, err := ioutil.ReadDir("./docker/")
+	if err != nil {
+		log.Fatal(err)
+	}
 
-    for _, f := range nodes {
-            fmt.Println(f.Name())
-    out, err := exec.Command("/usr/bin/docker-compose","-H","tcp://" + f.Name() + ":2375", "-f", "docker/" + f.Name() + "/docker-compose.yml" ,"up", "-d", "--remove-orphans").Output()
+	for _, f := range nodes {
+		fmt.Println(f.Name())
 
-    if err != nil {
-        fmt.Printf("%s", err)
-    }
-    fmt.Println("Command Successfully Executed")
-    output := string(out[:])
-    fmt.Println(output)
-    }
+		out, err := exec.Command("/usr/bin/docker-compose", "-p", f.Name(), "-H", "tcp://"+f.Name()+":2375", "-f", "docker/"+f.Name(), "up", "-d", "--remove-orphans").CombinedOutput()
 
+		if err != nil {
+			fmt.Printf("Error updating:%s Message:%s", f.Name(), err)
+			output := string(out[:])
+			fmt.Println(output)
+		}
+	}
 
 }
 
 func main() {
 
 	go func() {
-for {
-dockercompose();
-}
+		for {
+			dockercompose()
+		}
 	}()
 
 	http.Handle("/", http.FileServer(http.Dir("/files/")))
-	
+
 	go func() {
 		// use nil in place of handler to disable read or write operations
 		s := tftp.NewServer(readHandler, nil)
