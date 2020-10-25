@@ -19,7 +19,8 @@ WORKDIR /files/
 RUN wget https://stable.release.flatcar-linux.net/amd64-usr/current/flatcar_production_pxe.vmlinuz
 RUN wget https://stable.release.flatcar-linux.net/amd64-usr/current/flatcar_production_pxe_image.cpio.gz
 
-FROM scratch
+FROM alpine
+RUN apk add --no-cache docker-compose
 WORKDIR /files/
 COPY --from=tftp /files/flatcar_production_pxe.vmlinuz .
 COPY --from=tftp /files/flatcar_production_pxe_image.cpio.gz .
@@ -29,7 +30,7 @@ WORKDIR /tftp/
 COPY --from=tftp /usr/share/syslinux/lpxelinux.0 .
 COPY --from=tftp /usr/share/syslinux/ldlinux.c32 .
 WORKDIR /tftp/pxelinux.cfg/
-COPY default default
 WORKDIR /tftp/
 COPY --from=builder /main /tftp/main
+COPY docker/ docker/
 ENTRYPOINT ["/tftp/main"]

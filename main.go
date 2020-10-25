@@ -6,9 +6,12 @@ import (
 	"github.com/pin/tftp"
 	"io"
 	"net/http"
+    "os/exec"
 	"os"
 	"strings"
 	"time"
+	    "io/ioutil"
+     "log"
 )
 
 func defaultFile(ip string) *bytes.Buffer {
@@ -60,7 +63,36 @@ func readHandler(filename string, r io.ReaderFrom) error {
 	return nil
 }
 
+func dockercompose() {
+
+nodes, err := ioutil.ReadDir("./docker/")
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    for _, f := range nodes {
+            fmt.Println(f.Name())
+    out, err := exec.Command("/usr/bin/docker-compose","-H","tcp://" + f.Name() + ":2375", "-f", "docker/" + f.Name() + "/docker-compose.yml" ,"up", "-d", "--remove-orphans").Output()
+
+    if err != nil {
+        fmt.Printf("%s", err)
+    }
+    fmt.Println("Command Successfully Executed")
+    output := string(out[:])
+    fmt.Println(output)
+    }
+
+
+}
+
 func main() {
+
+	go func() {
+for {
+dockercompose();
+}
+	}()
+
 	http.Handle("/", http.FileServer(http.Dir("/files/")))
 	
 	go func() {
