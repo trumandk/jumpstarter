@@ -109,14 +109,51 @@ storage:
     - path: /etc/ssh/ssh_host_rsa_key
       filesystem: root
       contents:
-        remote:
-          url: http://192.168.1.2/ssh/ssh_host_rsa_key
+        inline: |
+          -----BEGIN OPENSSH PRIVATE KEY-----
+          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
+          -----END OPENSSH PRIVATE KEY-----
       mode: 0600
     - path: /etc/ssh/ssh_host_rsa_key.pub
       filesystem: root
       contents:
-        remote:
-          url: http://192.168.1.2/ssh/ssh_host_rsa_key.pub
+        inline: |
+          ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDXfewFQ0sXXrlurYhjKyGiCw2zTU77y39x3e9N0C70L+sUcYUgQdXwPTZtXbuezhSSUfU7Pl3eD8OFW9lFEiXQndQRZj9Iu98nQJJ/33ASvFwDVbhj84ortlxKia+S+k8cEwZikGdfDGqXUgP7d48Ct7BW2Hpu+D1ktM0D8UQua3k2J3+Ji5eJ04+aNKx3byjbGmF5tI3HkAqT/Kawy+Zhq4bKFZdHnK8JDl6mkuI7e3Sf8bQESJW2iXKAChYyBUMlPXAamc3Ol8tSUrJ1TkDUZOJdWbBLK9XJ6QJJjTxYUkG+MFAV90RbZ757Uon83pzpYF0lJG0BO923pKKaXgB8TkCq9vEAJLKA0RkFaj/9JShfzJ4UPvAc7SqWbWUs733Yk1BiwrFquoDrwrxR6Q3c/4fVvGuMrzSmBufUMH2YfhHn7WMKTaQ+Lkp4WH2aHx9aQAkVZipA9JGtoaGf5ohsXPQcdFWNpyQotiz6SLLyRnT26lzgMK8LQqp0Pi1l05M= root@localhost
       mode: 0644
 
 passwd:
