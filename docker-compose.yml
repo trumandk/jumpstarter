@@ -4,4 +4,6 @@ services:
     build: .
     network_mode: host
     volumes:
-      - ./docker/:/tftp/docker/
+      - ~/.ssh/:/.ssh/
+    environment:
+      - GIT_CLUSTER="git@github.com:trumandk/cluster.git"

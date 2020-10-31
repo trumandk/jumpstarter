@@ -3,6 +3,8 @@ package main
 import (
 	"bytes"
 	"fmt"
+	"github.com/go-git/go-git"
+	"github.com/go-git/go-git/plumbing/transport/ssh"
 	"github.com/pin/tftp"
 	"io"
 	"io/ioutil"
@@ -63,9 +65,69 @@ func readHandler(filename string, r io.ReaderFrom) error {
 	return nil
 }
 
+func dockerInitGit() {
+	err := os.RemoveAll("/git/")
+	if err != nil {
+		fmt.Printf("Remove folder :%s", err)
+	}
+	publicKeys, err := ssh.NewPublicKeysFromFile("git", "/.ssh/id_rsa", "")
+
+	if err != nil {
+		fmt.Printf("generate publickeys failed :%s", err)
+		return
+	}
+	//	fmt.Printf("pubkey :%s", publicKeys)
+
+	r, err := git.PlainClone("/git/", false, &git.CloneOptions{
+		URL:      os.Getenv("GIT_CLUSTER"),
+		Auth:     publicKeys,
+		Progress: os.Stdout,
+	})
+	if err != nil {
+		fmt.Printf("Git error :%s", err)
+	}
+	ref, err := r.Head()
+	fmt.Printf("ref :%s", ref)
+	if err != nil {
+		fmt.Printf("head :%s", err)
+	}
+	fmt.Printf("ref :%s", ref)
+
+}
+
+func dockerGitUpdate() {
+	r, err := git.PlainOpen("/git/")
+	if err != nil {
+		fmt.Printf("plain open :%s", err)
+	}
+	w, err := r.Worktree()
+	if err != nil {
+		fmt.Printf("worktree error :%s", err)
+	}
+	publicKeys, err := ssh.NewPublicKeysFromFile("git", "/.ssh/id_rsa", "")
+
+	if err != nil {
+		fmt.Printf("generate publickeys failed :%s", err)
+		return
+	}
+	err = w.Pull(&git.PullOptions{
+		RemoteName: "origin",
+		Auth:       publicKeys,
+		Progress:   os.Stdout,
+	})
+	if err != nil {
+		fmt.Printf("pull :%s", err)
+	}
+	ref, err := r.Head()
+	fmt.Printf("ref :%s", ref)
+	if err != nil {
+		fmt.Printf("head :%s", err)
+	}
+}
+
 func dockercompose() {
 
-	nodes, err := ioutil.ReadDir("./docker/")
+	nodes, err := ioutil.ReadDir("/git/docker/")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -74,13 +136,13 @@ func dockercompose() {
 		if f.Name() != "env" {
 			fmt.Println(f.Name())
 
-			out, err := exec.Command("/usr/bin/docker-compose", "-p", f.Name(), "--env-file", "./docker/env", "-H", "tcp://"+f.Name()+":2375", "-f", "docker/"+f.Name(), "up", "-d", "--remove-orphans").CombinedOutput()
+			out, err := exec.Command("/usr/bin/docker-compose", "-p", f.Name(), "--env-file", "/git/docker/env", "-H", "tcp://"+f.Name()+":2375", "-f", "/git/docker/"+f.Name(), "up", "-d", "--remove-orphans").CombinedOutput()
 
 			if err != nil {
 				fmt.Printf("Error updating:%s Message:%s", f.Name(), err)
-				output := string(out[:])
-				fmt.Println(output)
 			}
+			output := string(out[:])
+			fmt.Println(output)
 		}
 	}
 
@@ -89,12 +151,13 @@ func dockercompose() {
 func main() {
 
 	go func() {
+		dockerInitGit()
 		for {
+			dockerGitUpdate()
 			dockercompose()
+			time.Sleep(1 * time.Second)
 		}
 	}()
-
-	http.Handle("/", http.FileServer(http.Dir("/files/")))
 
 	go func() {
 		// use nil in place of handler to disable read or write operations
@@ -106,6 +169,7 @@ func main() {
 			os.Exit(1)
 		}
 	}()
+	http.Handle("/", http.FileServer(http.Dir("/files/")))
 	http.ListenAndServe(":80", nil)
 
 }

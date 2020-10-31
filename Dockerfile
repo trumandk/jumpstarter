@@ -5,6 +5,7 @@ RUN apk add --no-cache git
 WORKDIR /app/
 
 RUN go get github.com/pin/tftp
+RUN go get github.com/go-git/go-git
 
 #RUN go get github.com/miekg/dns
 #RUN go get github.com/sparrc/go-ping
@@ -31,4 +32,5 @@ COPY --from=tftp /usr/share/syslinux/ldlinux.c32 .
 WORKDIR /tftp/pxelinux.cfg/
 WORKDIR /tftp/
 COPY --from=builder /main /tftp/main
+ENV SSH_KNOWN_HOSTS=/.ssh/known_hosts
 ENTRYPOINT ["/tftp/main"]
