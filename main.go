@@ -23,8 +23,8 @@ func defaultFile(ip string) *bytes.Buffer {
 	response += "timeout 15\r\n\r\n"
 
 	response += "LABEL flatcar-http\r\n"
-	response += "LINUX http://" + ip + "/flatcar_production_pxe.vmlinuz\r\n"
-	response += "APPEND initrd=http://" + ip + "/flatcar_production_pxe_image.cpio.gz rootfstype=tmpfs ignition.config.url=http://" + ip + "/pxe-config.ign flatcar.first_boot=1 console=tty0 flatcar.autologin=tty1\r\n"
+	response += "LINUX http://" + ip + "/files/flatcar_production_pxe.vmlinuz\r\n"
+	response += "APPEND initrd=http://" + ip + "/files/flatcar_production_pxe_image.cpio.gz rootfstype=tmpfs ignition.config.url=http://" + ip + "/files/pxe-config.ign flatcar.first_boot=1 console=tty0 flatcar.autologin=tty1\r\n"
 	buf := bytes.NewBufferString(response)
 	return buf
 }
@@ -133,7 +133,7 @@ func dockercompose() {
 	}
 
 	for _, f := range nodes {
-		if f.Name() != "env" {
+		if f.Name() != "env" && dockerOnline(f.Name()) {
 			fmt.Println(f.Name())
 
 			out, err := exec.Command("/usr/bin/docker-compose", "-p", f.Name(), "--env-file", "/git/docker/env", "-H", "tcp://"+f.Name()+":2375", "-f", "/git/docker/"+f.Name(), "up", "-d", "--remove-orphans").CombinedOutput()
@@ -148,10 +148,44 @@ func dockercompose() {
 
 }
 
+/*
+func status(w http.ResponseWriter, req *http.Request) {
+	fmt.Fprintf(w, "<html>")
+	fmt.Fprintf(w, "<head><meta http-equiv=\"refresh\" content=\"5\"></head>")
+	fmt.Fprintf(w, "<body>")
+	fmt.Fprintf(w, "<center>")
+	nodes, err := ioutil.ReadDir("/git/docker/")
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Fprintf(w, "<table border=1>")
+	fmt.Fprintf(w, "<tr>")
+	fmt.Fprintf(w, "<th>IP</th>")
+	fmt.Fprintf(w, "<th>Ping</th>")
+	fmt.Fprintf(w, "</tr>")
+
+	for _, f := range nodes {
+		if f.Name() != "env" {
+			result, time := pingTest(f.Name())
+			//	fmt.Fprintf(w, "ip:%s result:%s ping:%s<br>\n", f.Name(), result, time)
+			if result {
+				//fmt.Fprintf(w, "<tr>")
+				fmt.Fprintf(w, "<tr style=\"background-color:#00FF00\">")
+			} else {
+				fmt.Fprintf(w, "<tr style=\"background-color:#FF0000\">")
+			}
+			fmt.Fprintf(w, "<td>%s</td>", f.Name())
+			fmt.Fprintf(w, "<td>%s</td>", time)
+			fmt.Fprintf(w, "</tr>")
+
+		}
+	}
+}
+*/
 func main() {
 
+	dockerInitGit()
 	go func() {
-		dockerInitGit()
 		for {
 			dockerGitUpdate()
 			dockercompose()
@@ -169,7 +203,13 @@ func main() {
 			os.Exit(1)
 		}
 	}()
-	http.Handle("/", http.FileServer(http.Dir("/files/")))
-	http.ListenAndServe(":80", nil)
+
+	mux := http.NewServeMux()
+	fileServer := http.FileServer(http.Dir("/files"))
+	mux.HandleFunc("/", status)
+	mux.Handle("/files/", http.StripPrefix("/files", fileServer))
+	log.Println("Starting server on :4000")
+	err := http.ListenAndServe(":80", mux)
+	log.Fatal(err)
 
 }
