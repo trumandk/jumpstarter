@@ -1,0 +1,75 @@
+{
+  "ignition": {
+    "config": {},
+    "security": {
+      "tls": {}
+    },
+    "timeouts": {},
+    "version": "2.2.0"
+  },
+  "networkd": {},
+  "passwd": {
+    "users": [
+      {
+        "name": "core",
+        "sshAuthorizedKeys": [
+          "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCrJDQj7oJfu0Tv7BJI2es8YVaugLaOEGdrBq2UJi6vPFdj7gYEHw40HM+OEB3qekzNZ9+PJ2XbGxkcHkq00PN1QL4Hl9qyxWJ+o3On627IZd7bu0mJdDWDRMpPrnBVFrg5dNGYd2V6LUDd+rosoNmTYfLW6u9WJWViU5px1jXJ9om0cOeiC5BCSGBZqeATZoZ7O+68yxAJYwJJARz5YSqZLt5sXipnuU7KnSXD15+CprGByK8oXtQ9I+xvPopg4XJdERCTHbuhQRWVv9HqJMAKjAaAKdlLuMU4cMbnVFfuz6xlYFzhv+Sje1Q6zsHdI2ADVtKtoNYSiicLMHjR6nY5"
+        ]
+      }
+    ]
+  },
+  "storage": {
+    "files": [
+      {
+        "filesystem": "root",
+        "path": "/etc/ssh/sshd_config",
+        "contents": {
+          "source": "data:,%23%20Use%20most%20defaults%20for%20sshd%20configuration.%0AUsePrivilegeSeparation%20sandbox%0ASubsystem%20sftp%20internal-sftp%0AUseDNS%20no%0A%0APermitRootLogin%20no%0AAllowUsers%20core%0AAuthenticationMethods%20publickey%0A",
+          "verification": {}
+        },
+        "mode": 384
+      },
+      {
+        "filesystem": "root",
+        "path": "/etc/modules-load.d/br_netfilter.conf",
+        "contents": {
+          "source": "data:,br_netfilter%0A",
+          "verification": {}
+        },
+        "mode": 420
+      },
+      {
+        "filesystem": "root",
+        "path": "/etc/modules-load.d/nf.conf",
+        "contents": {
+          "source": "data:,nf_conntrack%0A",
+          "verification": {}
+        },
+        "mode": 420
+      },
+      {
+        "filesystem": "root",
+        "path": "/etc/sysctl.d/nf.conf",
+        "contents": {
+          "source": "data:,net.netfilter.nf_conntrack_max%3D131072%0A",
+          "verification": {}
+        },
+        "mode": 420
+      }
+    ]
+  },
+  "systemd": {
+    "units": [
+      {
+        "contents": "[Unit]\nDescription=Docker Socket for the API\n\n[Socket]\nListenStream=2375\nBindIPv6Only=both\nService=docker.service\n\n[Install]\nWantedBy=sockets.target\n",
+        "enable": true,
+        "name": "docker-tcp.socket"
+      },
+      {
+        "contents": "[Unit]\nDescription=Enable the Docker Socket for the API\n\n[Service]\nType=oneshot\nExecStart=/usr/bin/systemctl enable docker-tcp.socket\n",
+        "enable": true,
+        "name": "enable-docker-tcp.service"
+      }
+    ]
+  }
+}
