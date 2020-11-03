@@ -13,7 +13,7 @@
       {
         "name": "core",
         "sshAuthorizedKeys": [
-          "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCrJDQj7oJfu0Tv7BJI2es8YVaugLaOEGdrBq2UJi6vPFdj7gYEHw40HM+OEB3qekzNZ9+PJ2XbGxkcHkq00PN1QL4Hl9qyxWJ+o3On627IZd7bu0mJdDWDRMpPrnBVFrg5dNGYd2V6LUDd+rosoNmTYfLW6u9WJWViU5px1jXJ9om0cOeiC5BCSGBZqeATZoZ7O+68yxAJYwJJARz5YSqZLt5sXipnuU7KnSXD15+CprGByK8oXtQ9I+xvPopg4XJdERCTHbuhQRWVv9HqJMAKjAaAKdlLuMU4cMbnVFfuz6xlYFzhv+Sje1Q6zsHdI2ADVtKtoNYSiicLMHjR6nY5"
+          "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDY7x6BAwQq+XtRnsnsKOMZ/IH6fB9ejcRxcBLoEQEPeUJmWt3vySzxKtYDSVPn7mf/8JQgqjvac04J6BZMfbsSWlAqHEtYOwysBxmS2rSjkjey/xGtB+qlKZFzyZZAVe3AhYze8cVe327Tbysp7w1uaC+u2Q3vhvZYUjWnzW3ExJ8X+Iw6qh2hO4WQ+fDVcF9LeMDTe4yZ8a6RjwLtFyQo5Rm2VXqvR+s+d47reP/4VnHxchYfwYspIh0C2Mto+vRbbfYO+D35NdnOPAnP7HrNkSm/54wq7N/MXur7e6rg2h/mpZSWxFeLbJYiqBct0Qk+sRRaBUCG6XQzeUBdDgzj root@boot"
         ]
       }
     ]
@@ -52,6 +52,78 @@
         "path": "/etc/sysctl.d/nf.conf",
         "contents": {
           "source": "data:,net.netfilter.nf_conntrack_max%3D131072%0A",
+          "verification": {}
+        },
+        "mode": 420
+      },
+      {
+        "filesystem": "root",
+        "path": "/etc/ssh/ssh_host_dsa_key",
+        "contents": {
+          "source": "data:,-----BEGIN%20OPENSSH%20PRIVATE%20KEY-----%0Ab3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAABsQAAAAdzc2gtZH%0ANzAAAAgQCSRgVMXlwAOhfcCuGArY332Sha0mmQUVcVUzHX%2FnDkfenZ%2F%2F4yoCOmOY0LlAwL%0A58LHCuAnEqjc6KILDy8fIdwvFEKppRhd0V83KtfY0Wbt2ZXf2gLDODf3B4%2FRWp%2BAzWVS%2Fr%0AtL0aLZNJLTC64n0q4XBzjb67JIY%2BXH0oJsA5D24wAAABUAiLSiyWUV7mAvH1O8gz8pq6sF%0AKLsAAACAQnWZVRX8AaaiE%2FHJapGbyJMfhkOcquArGUZLwO17ki5AE%2FkcrwyH%2FRp3Sfydoy%0Aw6vQ4cf0u2ybJ%2BhGFmQTosD4PQwtAQy6RN677BTO13bYUSQEW0pr40zELsOmwVG%2BmIFTQg%0AGNJ44hLDCs7qkY7vKRTZL0jSoFrB5o95ysMeD8AAAACAaXTFqros1T1iAE60S6%2BgxuWeKQ%0AbbKClHO3z2BUB0pTu2uRbsSh6hXigza3XaUlj7TkXU2%2FuxYlALgoFC65syTK%2F5nGTRPq9M%0A4kRyZFcLNQrtNBVw25dX5iBqkU64y6ebT%2ByHdkYYrh03DeON7OGvzLOukUwl2yR7stIdP8%0Ant0bwAAAHoGAxDchgMQ3IAAAAHc3NoLWRzcwAAAIEAkkYFTF5cADoX3ArhgK2N99koWtJp%0AkFFXFVMx1%2F5w5H3p2f%2F%2BMqAjpjmNC5QMC%2BfCxwrgJxKo3OiiCw8vHyHcLxRCqaUYXdFfNy%0ArX2NFm7dmV39oCwzg39weP0VqfgM1lUv67S9Gi2TSS0wuuJ9KuFwc42%2BuySGPlx9KCbAOQ%0A9uMAAAAVAIi0osllFe5gLx9TvIM%2FKaurBSi7AAAAgEJ1mVUV%2FAGmohPxyWqRm8iTH4ZDnK%0ArgKxlGS8Dte5IuQBP5HK8Mh%2F0ad0n8naMsOr0OHH9LtsmyfoRhZkE6LA%2BD0MLQEMukTeu%2B%0AwUztd22FEkBFtKa%2BNMxC7DpsFRvpiBU0IBjSeOISwwrO6pGO7ykU2S9I0qBaweaPecrDHg%0A%2FAAAAAgGl0xaq6LNU9YgBOtEuvoMblnikG2ygpRzt89gVAdKU7trkW7EoeoV4oM2t12lJY%0A%2B05F1Nv7sWJQC4KBQuubMkyv%2BZxk0T6vTOJEcmRXCzUK7TQVcNuXV%2BYgapFOuMunm0%2Fsh3%0AZGGK4dNw3jjezhr8yzrpFMJdske7LSHT%2FJ7dG8AAAAFAdNpNCqhG%2BQJT8gBcRZbSi0Sn5I%0AAAAADnJvb3RAbG9jYWxob3N0AQIDBAU%3D%0A-----END%20OPENSSH%20PRIVATE%20KEY-----%0A",
+          "verification": {}
+        },
+        "mode": 420
+      },
+      {
+        "filesystem": "root",
+        "path": "/etc/ssh/ssh_host_dsa_key.pub",
+        "contents": {
+          "source": "data:,ssh-dss%20AAAAB3NzaC1kc3MAAACBAJJGBUxeXAA6F9wK4YCtjffZKFrSaZBRVxVTMdf%2BcOR96dn%2F%2FjKgI6Y5jQuUDAvnwscK4CcSqNzoogsPLx8h3C8UQqmlGF3RXzcq19jRZu3Zld%2FaAsM4N%2FcHj9Fan4DNZVL%2Bu0vRotk0ktMLrifSrhcHONvrskhj5cfSgmwDkPbjAAAAFQCItKLJZRXuYC8fU7yDPymrqwUouwAAAIBCdZlVFfwBpqIT8clqkZvIkx%2BGQ5yq4CsZRkvA7XuSLkAT%2BRyvDIf9GndJ%2FJ2jLDq9Dhx%2FS7bJsn6EYWZBOiwPg9DC0BDLpE3rvsFM7XdthRJARbSmvjTMQuw6bBUb6YgVNCAY0njiEsMKzuqRju8pFNkvSNKgWsHmj3nKwx4PwAAAAIBpdMWquizVPWIATrRLr6DG5Z4pBtsoKUc7fPYFQHSlO7a5FuxKHqFeKDNrddpSWPtORdTb%2B7FiUAuCgULrmzJMr%2FmcZNE%2Br0ziRHJkVws1Cu00FXDbl1fmIGqRTrjLp5tP7Id2RhiuHTcN443s4a%2FMs66RTCXbJHuy0h0%2Fye3RvA%3D%3D%20root%40localhost%0A",
+          "verification": {}
+        },
+        "mode": 420
+      },
+      {
+        "filesystem": "root",
+        "path": "/etc/ssh/ssh_host_ecdsa_key",
+        "contents": {
+          "source": "data:,-----BEGIN%20OPENSSH%20PRIVATE%20KEY-----%0Ab3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAaAAAABNlY2RzYS%0A1zaGEyLW5pc3RwMjU2AAAACG5pc3RwMjU2AAAAQQQGZWKV0qMkKA5oJh28Oa8jwCTzDCHB%0ACTeOdigg1mUcrgqss1cKk9HKKKI7ufkjUXVGQrky6M41wHkjJ1UjE4u8AAAAqH5J%2Fv5%2BSf%0A7%2BAAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBAZlYpXSoyQoDmgm%0AHbw5ryPAJPMMIcEJN452KCDWZRyuCqyzVwqT0coooju5%2BSNRdUZCuTLozjXAeSMnVSMTi7%0AwAAAAhAOVbVHVJHbni7mRAZAVy1esvmksT4%2BN3AHBnyX%2FWuQroAAAADnJvb3RAbG9jYWxo%0Ab3N0AQ%3D%3D%0A-----END%20OPENSSH%20PRIVATE%20KEY-----%0A",
+          "verification": {}
+        },
+        "mode": 384
+      },
+      {
+        "filesystem": "root",
+        "path": "/etc/ssh/ssh_host_ecdsa_key.pub",
+        "contents": {
+          "source": "data:,ecdsa-sha2-nistp256%20AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBAZlYpXSoyQoDmgmHbw5ryPAJPMMIcEJN452KCDWZRyuCqyzVwqT0coooju5%2BSNRdUZCuTLozjXAeSMnVSMTi7w%3D%20root%40localhost%0A",
+          "verification": {}
+        },
+        "mode": 420
+      },
+      {
+        "filesystem": "root",
+        "path": "/etc/ssh/ssh_host_ed25519_key",
+        "contents": {
+          "source": "data:,-----BEGIN%20OPENSSH%20PRIVATE%20KEY-----%0Ab3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW%0AQyNTUxOQAAACA2vO91FqU%2BQq8J1ZU3WCQF2cgX7Ji5jusjqTcqEQ0VCQAAAJgWI1kdFiNZ%0AHQAAAAtzc2gtZWQyNTUxOQAAACA2vO91FqU%2BQq8J1ZU3WCQF2cgX7Ji5jusjqTcqEQ0VCQ%0AAAAEBEYhULl2wMl6GEYgD%2FYx7w1ozJWChH8KtA7gGsFoYDaDa873UWpT5CrwnVlTdYJAXZ%0AyBfsmLmO6yOpNyoRDRUJAAAADnJvb3RAbG9jYWxob3N0AQIDBAUGBw%3D%3D%0A-----END%20OPENSSH%20PRIVATE%20KEY-----%0A",
+          "verification": {}
+        },
+        "mode": 384
+      },
+      {
+        "filesystem": "root",
+        "path": "/etc/ssh/ssh_host_ed25519_key.pub",
+        "contents": {
+          "source": "data:,ssh-ed25519%20AAAAC3NzaC1lZDI1NTE5AAAAIDa873UWpT5CrwnVlTdYJAXZyBfsmLmO6yOpNyoRDRUJ%20root%40localhost%0A",
+          "verification": {}
+        },
+        "mode": 420
+      },
+      {
+        "filesystem": "root",
+        "path": "/etc/ssh/ssh_host_rsa_key",
+        "contents": {
+          "source": "data:,-----BEGIN%20OPENSSH%20PRIVATE%20KEY-----%0Ab3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAABlwAAAAdzc2gtcn%0ANhAAAAAwEAAQAAAYEA133sBUNLF165bq2IYyshogsNs01O%2B8t%2Fcd3vTdAu9C%2FrFHGFIEHV%0A8D02bV27ns4UklH1Oz5d3g%2FDhVvZRRIl0J3UEWY%2FSLvfJ0CSf99wErxcA1W4Y%2FOKK7ZcSo%0AmvkvpPHBMGYpBnXwxql1ID%2B3ePArewVth6bvg9ZLTNA%2FFELmt5Nid%2FiYuXidOPmjSsd28o%0A2xphebSNx5AKk%2FymsMvmYauGyhWXR5yvCQ5eppLiO3t0n%2FG0BEiVtolygAoWMgVDJT1wGp%0AnNzpfLUlKydU5A1GTiXVmwSyvVyekCSY08WFJBvjBQFfdEW2e%2Be1KJ%2FN6c6WBdJSRtATvd%0At6Siml4AfE5AqvbxACSygNEZBWo%2F%2FSUoX8yeFD7wHO0qlm1lLO992JNQYsKxarqA68K8Ue%0AkN3P%2BH1bxrjK80pgbn1DB9mH4R5%2B1jCk2kPi5KeFh9mh8fWkAJFWYqQPSRraGhn%2BaIbFz0%0AHHRVjackKLYs%2Bkiy8kZ09upc4DCvC0KqdD4tZdOTAAAFiJI9h9mSPYfZAAAAB3NzaC1yc2%0AEAAAGBANd97AVDSxdeuW6tiGMrIaILDbNNTvvLf3Hd703QLvQv6xRxhSBB1fA9Nm1du57O%0AFJJR9Ts%2BXd4Pw4Vb2UUSJdCd1BFmP0i73ydAkn%2FfcBK8XANVuGPziiu2XEqJr5L6TxwTBm%0AKQZ18MapdSA%2Ft3jwK3sFbYem74PWS0zQPxRC5reTYnf4mLl4nTj5o0rHdvKNsaYXm0jceQ%0ACpP8prDL5mGrhsoVl0ecrwkOXqaS4jt7dJ%2FxtARIlbaJcoAKFjIFQyU9cBqZzc6Xy1JSsn%0AVOQNRk4l1ZsEsr1cnpAkmNPFhSQb4wUBX3RFtnvntSifzenOlgXSUkbQE73bekoppeAHxO%0AQKr28QAksoDRGQVqP%2F0lKF%2FMnhQ%2B8BztKpZtZSzvfdiTUGLCsWq6gOvCvFHpDdz%2Fh9W8a4%0AyvNKYG59QwfZh%2BEeftYwpNpD4uSnhYfZofH1pACRVmKkD0ka2hoZ%2FmiGxc9Bx0VY2nJCi2%0ALPpIsvJGdPbqXOAwrwtCqnQ%2BLWXTkwAAAAMBAAEAAAGALeljPt%2FOgOUqpt0MIOzQlqC6Q4%0AhmGpmJxq3dTXvcdSQ8dreVAIFmXm%2F8R6Lf1X7cvSv%2FDqdEAorjQmeGTAQI0IC%2F7REWzJ1S%0Adx931wy46RT%2BmatKxOjfeF67HRpmsO7pqfaXtqpDi%2BmuUB0mQg6ABrkyNd6bf0cedXVb9M%0AoTl7xIL%2FSMZLa8C55qixVL5YpmbwAY4oBIcMtMpaj%2Frs1SgV61MhsVhyln1YsdOWo0Dy5H%0Ac8hgbUU1uJViMstzXSbnefnf1HgUwj6wvll4tIOPwB0OC7XqU9zqA9DHTb4qZn%2B0FhZlP3%0ALpdCPsYhLTAAr1Z6nTrWGv8I6hZXBSAjEDFo7ZKu8b6WJiHrQLeiUZ2x261rWyr15Sx6Pb%0ADWlVQ9qUb5l%2Fi5csWGIFVuxJAQAAvrEgiR95C%2B1q4NSa6Ukm35qggOoN150jN9y883YD0Y%0ACMvNpNEZwb1MKQMiKzAk10OT0kPkFCVS4%2FGkepGud69C3da6EHRirZ7Dxw1qDLyKwZAAAA%0AwCDfXBwGlDQQ%2Fc6zR8lYSDJTTgTtFAdWnxtGDIlcaErpeT1XobEa1kUjrEHc13W%2Fgvi%2F3S%0AVNcUH8%2Bk%2B63uI4E%2B0dtOKTefUjNC3kVS9juyky%2FO15%2BBuYJd6X9YSopLAZH3GFDT%2F3kEUo%0ADh%2B%2F3fzrjTWSEp9VaMtj9j%2FQaWHF1Hzcu8HVWVO35VqHq4YAylD3kd0bXYr0Ht7xc9jmgu%0A4%2FocHt1YAA7OMojZo7iyZb9zcWLc0TLqq6QiS%2B%2FkiucYqvSgAAAMEA%2F1NfBDjeYURbHYnO%0AwG4GCmidewk4i9P9s4uPN%2F8hKDwRHXVONEF1Tnxiu6eHTkDxKXpezRTi94At3JXacwPTBh%0AahN%2BHJ7CBJjgVwZjpDy86TWrvuzyj7t%2Fdb%2FZu6J1hCC9%2BSho%2BaEvs3t%2FA8GkA%2F%2BeP2gBBF%0APumg44dywOEHXPeqKAIBegI1XNtGCVbpr0DtEMb6qM7djYVnpL%2BYSdMxEZXXaRlSFLaldC%0Aq7A2Uy4CkzlXXZ9mI%2F%2Bpb3Z7A8O24PAAAAwQDYD55h73X%2BbsGlVZEJvWiAhiOcoHo1Ua%2Bg%0A%2BaLWffzjOlpAEF12tYRpPkrmUAj0buRou8gzCY5vCY2RzLKCkHpvvxlbf%2FO3E29KW0RUl%2B%0AvocvuJUWpVCU0mmBHu9tZcQlwCbCTg0y%2By3H9Tb%2FAM9YAxSXQ3JVqMgLe1YU1m%2FIPgq4et%0AidRXdYgNkMB7ySPeLIiwRZgBY0u7SthTKBazqboNlZB5Ps4J4PXw57bH0GrBHgOyCz0FFd%0AgCIAKQJT8Txj0AAAAOcm9vdEBsb2NhbGhvc3QBAgMEBQ%3D%3D%0A-----END%20OPENSSH%20PRIVATE%20KEY-----%0A",
+          "verification": {}
+        },
+        "mode": 384
+      },
+      {
+        "filesystem": "root",
+        "path": "/etc/ssh/ssh_host_rsa_key.pub",
+        "contents": {
+          "source": "data:,ssh-rsa%20AAAAB3NzaC1yc2EAAAADAQABAAABgQDXfewFQ0sXXrlurYhjKyGiCw2zTU77y39x3e9N0C70L%2BsUcYUgQdXwPTZtXbuezhSSUfU7Pl3eD8OFW9lFEiXQndQRZj9Iu98nQJJ%2F33ASvFwDVbhj84ortlxKia%2BS%2Bk8cEwZikGdfDGqXUgP7d48Ct7BW2Hpu%2BD1ktM0D8UQua3k2J3%2BJi5eJ04%2BaNKx3byjbGmF5tI3HkAqT%2FKawy%2BZhq4bKFZdHnK8JDl6mkuI7e3Sf8bQESJW2iXKAChYyBUMlPXAamc3Ol8tSUrJ1TkDUZOJdWbBLK9XJ6QJJjTxYUkG%2BMFAV90RbZ757Uon83pzpYF0lJG0BO923pKKaXgB8TkCq9vEAJLKA0RkFaj%2F9JShfzJ4UPvAc7SqWbWUs733Yk1BiwrFquoDrwrxR6Q3c%2F4fVvGuMrzSmBufUMH2YfhHn7WMKTaQ%2BLkp4WH2aHx9aQAkVZipA9JGtoaGf5ohsXPQcdFWNpyQotiz6SLLyRnT26lzgMK8LQqp0Pi1l05M%3D%20root%40localhost%0A",
           "verification": {}
         },
         "mode": 420

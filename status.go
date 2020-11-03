@@ -63,8 +63,17 @@ func dockerStat(w http.ResponseWriter, server string){
 
 func status(w http.ResponseWriter, req *http.Request) {
 
+	commands, commandok := req.URL.Query()["command"]
+	ips, ipok := req.URL.Query()["ip"]
 
         fmt.Fprintf(w, "<html>")
+	 if commandok && ipok {
+		 command := commands[0]
+		 ip := ips[0]
+        fmt.Fprintf(w, "skod command=%s ip%s", command, ip)
+		 commandSSH(ip, command)
+    	}
+
         fmt.Fprintf(w, "<head><meta http-equiv=\"refresh\" content=\"5\"></head>")
         fmt.Fprintf(w, "<body>")
         fmt.Fprintf(w, "<center>")
@@ -82,6 +91,8 @@ func status(w http.ResponseWriter, req *http.Request) {
         fmt.Fprintf(w, "<th>Stopped</th>")
         fmt.Fprintf(w, "<th>MemTotal</th>")
         fmt.Fprintf(w, "<th>SystemTime</th>")
+        fmt.Fprintf(w, "<th></th>")
+        fmt.Fprintf(w, "<th></th>")
         fmt.Fprintf(w, "</tr>")
 
         for _, f := range nodes {
@@ -90,16 +101,18 @@ func status(w http.ResponseWriter, req *http.Request) {
                         //      fmt.Fprintf(w, "ip:%s result:%s ping:%s<br>\n", f.Name(), result, time)
                         if result {
                                 //fmt.Fprintf(w, "<tr>")
-                                fmt.Fprintf(w, "<tr style=\"background-color:#00FF00\">")
+                                fmt.Fprintf(w, "<tr style=\"background-color:#00FF00\">\n")
                         } else {
-                                fmt.Fprintf(w, "<tr style=\"background-color:#FF0000\">")
+                                fmt.Fprintf(w, "<tr style=\"background-color:#FF0000\">\n")
                         }
-                        fmt.Fprintf(w, "<td>%s</td>", f.Name())
-                        fmt.Fprintf(w, "<td>%s</td>", time)
+                        fmt.Fprintf(w, "<td>%s</td>\n", f.Name())
+                        fmt.Fprintf(w, "<td>%s</td>\n", time)
         //                fmt.Fprintf(w, "<td>")
                         if result {
 			dockerStat(w, f.Name())
 			}
+                        fmt.Fprintf(w, "<td><a href=\"?ip=%s&command=sudo reboot\">Reboot</a></td>\n", f.Name())
+                        fmt.Fprintf(w, "<td><a href=\"?ip=%s&command=sudo poweroff\">Poweroff</a></td>\n", f.Name())
           //              fmt.Fprintf(w, "</td>")
                         fmt.Fprintf(w, "</tr>")
 
