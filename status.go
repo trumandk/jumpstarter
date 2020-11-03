@@ -85,19 +85,21 @@ func status(w http.ResponseWriter, req *http.Request) {
         if err != nil {
                 log.Fatal(err)
         }
-        fmt.Fprintf(w, "<table border=1>")
+        fmt.Fprintf(w, "<table class=\"table table-hover\">")
+        fmt.Fprintf(w, "<thead class=\"thead-dark\">")
         fmt.Fprintf(w, "<tr>")
-        fmt.Fprintf(w, "<th></th>")
-        fmt.Fprintf(w, "<th></th>")
-        fmt.Fprintf(w, "<th>IP</th>")
-        fmt.Fprintf(w, "<th>Ping</th>")
-        fmt.Fprintf(w, "<th>Containers</th>")
-        fmt.Fprintf(w, "<th>Running</th>")
-        fmt.Fprintf(w, "<th>Paused</th>")
-        fmt.Fprintf(w, "<th>Stopped</th>")
-        fmt.Fprintf(w, "<th>MemTotal</th>")
-        fmt.Fprintf(w, "<th>SystemTime</th>")
+        fmt.Fprintf(w, "<th scope=col></th>")
+        fmt.Fprintf(w, "<th scope=col>IP</th>")
+        fmt.Fprintf(w, "<th scope=col>Ping</th>")
+        fmt.Fprintf(w, "<th scope=col>Containers</th>")
+        fmt.Fprintf(w, "<th scope=col>Running</th>")
+        fmt.Fprintf(w, "<th scope=col>Paused</th>")
+        fmt.Fprintf(w, "<th scope=col>Stopped</th>")
+        fmt.Fprintf(w, "<th scope=col>MemTotal</th>")
+        fmt.Fprintf(w, "<th scope=col>SystemTime</th>")
         fmt.Fprintf(w, "</tr>")
+        fmt.Fprintf(w, "</thead>")
+        fmt.Fprintf(w, "<tbody>")
 
         for _, f := range nodes {
                 if f.Name() != "env" {
@@ -107,14 +109,17 @@ func status(w http.ResponseWriter, req *http.Request) {
 				online = dockerOnline(f.Name())
 			}
                         if result && online {
-                                fmt.Fprintf(w, "<tr style=\"background-color:#00FF00\">\n")
+                                fmt.Fprintf(w, "<tr>\n")
+                                //fmt.Fprintf(w, "<tr style=\"background-color:#00FF00\">\n")
                         } else if result {
                                 fmt.Fprintf(w, "<tr style=\"background-color:#F4D942\">\n")
 			}else{
                                 fmt.Fprintf(w, "<tr style=\"background-color:#FF0000\">\n")
                         }
-                        fmt.Fprintf(w, "<td><a href=\"/ssh?ip=%s&command=sudo reboot\" class=\"btn btn-warning\">Reboot</a></td>\n", f.Name())
-                        fmt.Fprintf(w, "<td><a href=\"/ssh?ip=%s&command=sudo poweroff\" class=\"btn btn-danger\">Poweroff</a></td>\n", f.Name())
+                                fmt.Fprintf(w, "<td>\n")
+                        fmt.Fprintf(w, "<a href=\"/ssh?ip=%s&command=sudo reboot\" class=\"btn btn-warning\">Reboot</a>\n", f.Name())
+                        fmt.Fprintf(w, "<a href=\"/ssh?ip=%s&command=sudo poweroff\" class=\"btn btn-danger\">Poweroff</a>\n", f.Name())
+                                fmt.Fprintf(w, "</td>\n")
                         fmt.Fprintf(w, "<td>%s</td>\n", f.Name())
                         fmt.Fprintf(w, "<td>%s</td>\n", time)
         //                fmt.Fprintf(w, "<td>")
@@ -126,6 +131,8 @@ func status(w http.ResponseWriter, req *http.Request) {
 
                 }
         }
+        fmt.Fprintf(w, "</tbody>")
+        fmt.Fprintf(w, "</table>")
 }
 
 
