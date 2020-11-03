@@ -60,19 +60,22 @@ func dockerStat(w http.ResponseWriter, server string){
 	*/
 
 }
-
-func status(w http.ResponseWriter, req *http.Request) {
-
+/*
+func sshCommand(w http.ResponseWriter, req *http.Request) {
 	commands, commandok := req.URL.Query()["command"]
 	ips, ipok := req.URL.Query()["ip"]
 
-        fmt.Fprintf(w, "<html>")
 	 if commandok && ipok {
 		 command := commands[0]
 		 ip := ips[0]
-        fmt.Fprintf(w, "skod command=%s ip%s", command, ip)
+       // 	fmt.Fprintf(w, "skod command=%s ip%s", command, ip)
 		 commandSSH(ip, command)
+		 http.Redirect(w, req, "/", 304)
     	}
+}
+*/
+func status(w http.ResponseWriter, req *http.Request) {
+
 
         fmt.Fprintf(w, "<head><meta http-equiv=\"refresh\" content=\"5\"></head>")
         fmt.Fprintf(w, "<body>")
@@ -111,8 +114,8 @@ func status(w http.ResponseWriter, req *http.Request) {
                         if result {
 			dockerStat(w, f.Name())
 			}
-                        fmt.Fprintf(w, "<td><a href=\"?ip=%s&command=sudo reboot\">Reboot</a></td>\n", f.Name())
-                        fmt.Fprintf(w, "<td><a href=\"?ip=%s&command=sudo poweroff\">Poweroff</a></td>\n", f.Name())
+                        fmt.Fprintf(w, "<td><a href=\"/ssh?ip=%s&command=sudo reboot\">Reboot</a></td>\n", f.Name())
+                        fmt.Fprintf(w, "<td><a href=\"/ssh?ip=%s&command=sudo poweroff\">Poweroff</a></td>\n", f.Name())
           //              fmt.Fprintf(w, "</td>")
                         fmt.Fprintf(w, "</tr>")
 

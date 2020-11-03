@@ -2,55 +2,41 @@ package main
 
 import (
         "fmt"
-      "net/http"
-//      "os"
         "io/ioutil"
+        "net/http"
         "golang.org/x/crypto/ssh"
 )
+
+func sshCommand(w http.ResponseWriter, req *http.Request) {
+        commands, commandok := req.URL.Query()["command"]
+        ips, ipok := req.URL.Query()["ip"]
+
+         if commandok && ipok {
+                 command := commands[0]
+                 ip := ips[0]
+                 commandSSH(ip, command)
+                 http.Redirect(w, req, "/", 304)
+        }
+}
+
 
 func commandSSH(ip string, command string) {
 
 go func() {
         client, session, err := connectToHost("core", ip + ":22")
         if err != nil {
-                //panic(err)
 		fmt.Println(err)
+		return
         }
         out, err := session.CombinedOutput(command)
         if err != nil {
-                //panic(err)
 		fmt.Println(err)
+		return
         }
         fmt.Println(string(out))
         client.Close()
         }()
 
-}
-
-func reboot(w http.ResponseWriter, req *http.Request) {
-        client, session, err := connectToHost("core", "192.168.1.132:22")
-        if err != nil {
-		fmt.Println(err)
-                //panic(err)
-        }
-        out, err := session.CombinedOutput("sudo reboot")
-        if err != nil {
-		fmt.Println(err)
-        }
-        fmt.Println(string(out))
-        client.Close()
-}
-func poweroff(w http.ResponseWriter, req *http.Request) {
-        client, session, err := connectToHost("core", "192.168.1.132:22")
-        if err != nil {
-		fmt.Println(err)
-        }
-        out, err := session.CombinedOutput("sudo poweroff")
-        if err != nil {
-		fmt.Println(err)
-        }
-        fmt.Println(string(out))
-        client.Close()
 }
 
 func PublicKeyFile(file string) ssh.AuthMethod {
@@ -71,7 +57,6 @@ func connectToHost(user, host string) (*ssh.Client, *ssh.Session, error) {
         sshConfig := &ssh.ClientConfig{
                 User: user,
                 Auth: []ssh.AuthMethod{PublicKeyFile("/.ssh/id_rsa")},
-                //Auth: []ssh.AuthMethod{ssh.Password(pass)},
         }
         sshConfig.HostKeyCallback = ssh.InsecureIgnoreHostKey()
 

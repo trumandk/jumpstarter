@@ -206,6 +206,7 @@ func main() {
 
 	mux := http.NewServeMux()
 	fileServer := http.FileServer(http.Dir("/files"))
+	mux.HandleFunc("/ssh", sshCommand)
 	mux.HandleFunc("/", status)
 	mux.Handle("/files/", http.StripPrefix("/files", fileServer))
 	log.Println("Starting server on :4000")
