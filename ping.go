@@ -36,7 +36,7 @@ func pingTest(ip string) (bool, time.Duration) {
                 stats := pinger.Statistics()
 
                 if pinger.PacketsRecv > 0 {
-                        return dockerOnline(ip), stats.AvgRtt
+                        return true, stats.AvgRtt
                 }
         }
         return false, 0

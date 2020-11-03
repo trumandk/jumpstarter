@@ -31,6 +31,7 @@ WORKDIR /files/
 COPY --from=tftp /files/flatcar_production_pxe.vmlinuz .
 COPY --from=tftp /files/flatcar_production_pxe_image.cpio.gz .
 COPY pxe-config.ign .
+COPY bootstrap.css .
 WORKDIR /tftp/
 COPY --from=tftp /usr/share/syslinux/lpxelinux.0 .
 COPY --from=tftp /usr/share/syslinux/ldlinux.c32 .

@@ -78,6 +78,7 @@ func status(w http.ResponseWriter, req *http.Request) {
 
 
         fmt.Fprintf(w, "<head><meta http-equiv=\"refresh\" content=\"5\"></head>")
+        fmt.Fprintf(w, "<link rel=\"stylesheet\" href=\"files/bootstrap.css\">")
         fmt.Fprintf(w, "<body>")
         fmt.Fprintf(w, "<center>")
         nodes, err := ioutil.ReadDir("/git/docker/")
@@ -86,6 +87,8 @@ func status(w http.ResponseWriter, req *http.Request) {
         }
         fmt.Fprintf(w, "<table border=1>")
         fmt.Fprintf(w, "<tr>")
+        fmt.Fprintf(w, "<th></th>")
+        fmt.Fprintf(w, "<th></th>")
         fmt.Fprintf(w, "<th>IP</th>")
         fmt.Fprintf(w, "<th>Ping</th>")
         fmt.Fprintf(w, "<th>Containers</th>")
@@ -94,28 +97,30 @@ func status(w http.ResponseWriter, req *http.Request) {
         fmt.Fprintf(w, "<th>Stopped</th>")
         fmt.Fprintf(w, "<th>MemTotal</th>")
         fmt.Fprintf(w, "<th>SystemTime</th>")
-        fmt.Fprintf(w, "<th></th>")
-        fmt.Fprintf(w, "<th></th>")
         fmt.Fprintf(w, "</tr>")
 
         for _, f := range nodes {
                 if f.Name() != "env" {
                         result, time := pingTest(f.Name())
-                        //      fmt.Fprintf(w, "ip:%s result:%s ping:%s<br>\n", f.Name(), result, time)
-                        if result {
-                                //fmt.Fprintf(w, "<tr>")
+			online := false
+			if result {
+				online = dockerOnline(f.Name())
+			}
+                        if result && online {
                                 fmt.Fprintf(w, "<tr style=\"background-color:#00FF00\">\n")
-                        } else {
+                        } else if result {
+                                fmt.Fprintf(w, "<tr style=\"background-color:#F4D942\">\n")
+			}else{
                                 fmt.Fprintf(w, "<tr style=\"background-color:#FF0000\">\n")
                         }
+                        fmt.Fprintf(w, "<td><a href=\"/ssh?ip=%s&command=sudo reboot\" class=\"btn btn-warning\">Reboot</a></td>\n", f.Name())
+                        fmt.Fprintf(w, "<td><a href=\"/ssh?ip=%s&command=sudo poweroff\" class=\"btn btn-danger\">Poweroff</a></td>\n", f.Name())
                         fmt.Fprintf(w, "<td>%s</td>\n", f.Name())
                         fmt.Fprintf(w, "<td>%s</td>\n", time)
         //                fmt.Fprintf(w, "<td>")
-                        if result {
+                        if online {
 			dockerStat(w, f.Name())
 			}
-                        fmt.Fprintf(w, "<td><a href=\"/ssh?ip=%s&command=sudo reboot\">Reboot</a></td>\n", f.Name())
-                        fmt.Fprintf(w, "<td><a href=\"/ssh?ip=%s&command=sudo poweroff\">Poweroff</a></td>\n", f.Name())
           //              fmt.Fprintf(w, "</td>")
                         fmt.Fprintf(w, "</tr>")
 
