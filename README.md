@@ -1,2 +1,4 @@
 # JumpStarter
-A tftp/http/management netboot server with build in FlatCar-Linux.
+A tftp/http netboot server with build in FlatCar and ignition for fast deployment of diskless docker cluster.
+
+
