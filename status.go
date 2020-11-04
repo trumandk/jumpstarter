@@ -103,7 +103,7 @@ func status(w http.ResponseWriter, req *http.Request) {
 	fmt.Fprintf(w, "<tbody>")
 
 	for _, f := range nodes {
-		if f.Name() != "env" {
+		if f.Name() != "env" && f.Name() != "all" {
 			result, time := pingTest(f.Name())
 			online := false
 			if result {

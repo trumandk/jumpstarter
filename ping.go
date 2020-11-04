@@ -9,7 +9,7 @@ import (
 
 func dockerOnline(host string) bool {
 	timeout := time.Duration(20) * time.Millisecond
-	conn, err := net.DialTimeout("tcp", net.JoinHostPort(host, "2375"), timeout)
+	conn, err := net.DialTimeout("tcp", net.JoinHostPort(host, "22"), timeout)
 	if err != nil {
 		return false
 	}

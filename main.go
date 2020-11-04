@@ -70,7 +70,7 @@ func dockerInitGit() {
 	if err != nil {
 		fmt.Printf("Remove folder :%s", err)
 	}
-	publicKeys, err := ssh.NewPublicKeysFromFile("git", "/.ssh/id_rsa", "")
+	publicKeys, err := ssh.NewPublicKeysFromFile("git", "/root/.ssh/id_rsa", "")
 
 	if err != nil {
 		fmt.Printf("generate publickeys failed :%s", err)
@@ -104,7 +104,7 @@ func dockerGitUpdate() {
 	if err != nil {
 		fmt.Printf("worktree error :%s", err)
 	}
-	publicKeys, err := ssh.NewPublicKeysFromFile("git", "/.ssh/id_rsa", "")
+	publicKeys, err := ssh.NewPublicKeysFromFile("git", "/root/.ssh/id_rsa", "")
 
 	if err != nil {
 		fmt.Printf("generate publickeys failed :%s", err)
@@ -133,10 +133,10 @@ func dockercompose() {
 	}
 
 	for _, f := range nodes {
-		if f.Name() != "env" && dockerOnline(f.Name()) {
+		if f.Name() != "env" && f.Name() != "all" && dockerOnline(f.Name()) {
 			fmt.Println(f.Name())
 
-			out, err := exec.Command("/usr/bin/docker-compose", "-p", f.Name(), "--env-file", "/git/docker/env", "-H", "tcp://"+f.Name()+":2375", "-f", "/git/docker/"+f.Name(), "up", "-d", "--remove-orphans").CombinedOutput()
+			out, err := exec.Command("/usr/bin/docker-compose", "-p", f.Name(), "--env-file", "/git/docker/env", "-H", "ssh://core@"+f.Name(), "-f", "/git/docker/"+f.Name(), "-f", "/git/docker/all", "up", "-d", "--remove-orphans").CombinedOutput()
 
 			if err != nil {
 				fmt.Printf("Error updating:%s Message:%s", f.Name(), err)

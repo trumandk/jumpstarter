@@ -130,18 +130,5 @@
       }
     ]
   },
-  "systemd": {
-    "units": [
-      {
-        "contents": "[Unit]\nDescription=Docker Socket for the API\n\n[Socket]\nListenStream=2375\nBindIPv6Only=both\nService=docker.service\n\n[Install]\nWantedBy=sockets.target\n",
-        "enable": true,
-        "name": "docker-tcp.socket"
-      },
-      {
-        "contents": "[Unit]\nDescription=Enable the Docker Socket for the API\n\n[Service]\nType=oneshot\nExecStart=/usr/bin/systemctl enable docker-tcp.socket\n",
-        "enable": true,
-        "name": "enable-docker-tcp.service"
-      }
-    ]
-  }
+  "systemd": {}
 }

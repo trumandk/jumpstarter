@@ -55,7 +55,7 @@ func connectToHost(user, host string) (*ssh.Client, *ssh.Session, error) {
 
 	sshConfig := &ssh.ClientConfig{
 		User: user,
-		Auth: []ssh.AuthMethod{PublicKeyFile("/.ssh/id_rsa")},
+		Auth: []ssh.AuthMethod{PublicKeyFile("/root/.ssh/id_rsa")},
 	}
 	sshConfig.HostKeyCallback = ssh.InsecureIgnoreHostKey()
 

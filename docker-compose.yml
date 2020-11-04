@@ -4,6 +4,7 @@ services:
     build: .
     network_mode: host
     volumes:
-      - ~/.ssh/:/.ssh/
+      - ~/.ssh/:/root/.ssh/
+            #      - ~/.ssh/:/.ssh/
     environment:
       - GIT_CLUSTER="git@github.com:trumandk/cluster.git"

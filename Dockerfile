@@ -37,6 +37,6 @@ COPY --from=tftp /usr/share/syslinux/lpxelinux.0 .
 COPY --from=tftp /usr/share/syslinux/ldlinux.c32 .
 WORKDIR /tftp/pxelinux.cfg/
 WORKDIR /tftp/
-ENV SSH_KNOWN_HOSTS=/.ssh/known_hosts
+ENV SSH_KNOWN_HOSTS=/root/.ssh/known_hosts
 COPY --from=builder /main /tftp/main
 ENTRYPOINT ["/tftp/main"]
