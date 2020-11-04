@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"github.com/go-git/go-git"
+	"github.com/go-git/go-git/plumbing/object"
 	"github.com/go-git/go-git/plumbing/transport/ssh"
 	"github.com/pin/tftp"
 	"io"
@@ -15,6 +16,34 @@ import (
 	"strings"
 	"time"
 )
+
+func fileExists(filename string) bool {
+	info, err := os.Stat(filename)
+	if os.IsNotExist(err) {
+		return false
+	}
+	return !info.IsDir()
+}
+
+func checkDockerExist(ip string) {
+	go func() {
+		dockerGitUpdate()
+		newDockerFile := "/git/docker/" + ip
+		if !fileExists(newDockerFile) {
+			fmt.Printf("Generate docker file for ip:%s \n", ip)
+			f, err := os.OpenFile(newDockerFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+			if err != nil {
+				log.Fatal(err)
+			}
+			_, err2 := f.WriteString("version: '3.3'\r\n")
+			if err2 != nil {
+				log.Fatal(err2)
+			}
+			dockerGitCommit("docker/" + ip)
+		}
+	}()
+
+}
 
 func defaultFile(ip string) *bytes.Buffer {
 	var response string
@@ -34,8 +63,10 @@ func readHandler(filename string, r io.ReaderFrom) error {
 	fmt.Printf("open: %s\n", filename)
 	if strings.Contains(filename, "default") {
 		ip := r.(tftp.RequestPacketInfo).LocalIP().String()
+		ipRemote := r.(tftp.OutgoingTransfer).RemoteAddr()
 		fmt.Printf("Generate default with ip:%s \n", ip)
 		n, err := r.ReadFrom(defaultFile(ip))
+		checkDockerExist(ipRemote.IP.String())
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "%v\n", err)
 			return err
@@ -94,6 +125,53 @@ func dockerInitGit() {
 	fmt.Printf("ref :%s", ref)
 
 }
+func dockerGitCommit(filename string) {
+	r, err := git.PlainOpen("/git/")
+	if err != nil {
+		fmt.Printf("plain open :%s", err)
+	}
+	w, err := r.Worktree()
+	if err != nil {
+		fmt.Printf("worktree error :%s", err)
+	}
+	w.Add(filename)
+
+	commit, err2 := w.Commit("Auto-commit server:"+filename, &git.CommitOptions{
+		Author: &object.Signature{
+			Name:  "JumpStarter",
+			Email: "jumpstarter@jumpstarter.io",
+			When:  time.Now(),
+		},
+	})
+	if err2 != nil {
+		fmt.Printf("Commit error:%s", err2)
+	}
+	obj, err3 := r.CommitObject(commit)
+	if err3 != nil {
+		fmt.Printf("CommitObject :%s", err3)
+	}
+	fmt.Println(obj)
+
+	publicKeys, err := ssh.NewPublicKeysFromFile("git", "/root/.ssh/id_rsa", "")
+
+	if err != nil {
+		fmt.Printf("generate publickeys failed :%s", err)
+		return
+	}
+	err5 := r.Push(&git.PushOptions{
+		RemoteName: "origin",
+		Auth:       publicKeys,
+		Progress:   os.Stdout,
+	})
+	if err5 != nil {
+		fmt.Printf("push :%s", err5)
+	}
+	ref, err := r.Head()
+	fmt.Printf("ref :%s", ref)
+	if err != nil {
+		fmt.Printf("head :%s", err)
+	}
+}
 
 func dockerGitUpdate() {
 	r, err := git.PlainOpen("/git/")
@@ -148,40 +226,6 @@ func dockercompose() {
 
 }
 
-/*
-func status(w http.ResponseWriter, req *http.Request) {
-	fmt.Fprintf(w, "<html>")
-	fmt.Fprintf(w, "<head><meta http-equiv=\"refresh\" content=\"5\"></head>")
-	fmt.Fprintf(w, "<body>")
-	fmt.Fprintf(w, "<center>")
-	nodes, err := ioutil.ReadDir("/git/docker/")
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Fprintf(w, "<table border=1>")
-	fmt.Fprintf(w, "<tr>")
-	fmt.Fprintf(w, "<th>IP</th>")
-	fmt.Fprintf(w, "<th>Ping</th>")
-	fmt.Fprintf(w, "</tr>")
-
-	for _, f := range nodes {
-		if f.Name() != "env" {
-			result, time := pingTest(f.Name())
-			//	fmt.Fprintf(w, "ip:%s result:%s ping:%s<br>\n", f.Name(), result, time)
-			if result {
-				//fmt.Fprintf(w, "<tr>")
-				fmt.Fprintf(w, "<tr style=\"background-color:#00FF00\">")
-			} else {
-				fmt.Fprintf(w, "<tr style=\"background-color:#FF0000\">")
-			}
-			fmt.Fprintf(w, "<td>%s</td>", f.Name())
-			fmt.Fprintf(w, "<td>%s</td>", time)
-			fmt.Fprintf(w, "</tr>")
-
-		}
-	}
-}
-*/
 func main() {
 
 	dockerInitGit()

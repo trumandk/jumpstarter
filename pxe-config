@@ -31,6 +31,12 @@ storage:
       contents:
         inline: |
           net.netfilter.nf_conntrack_max=131072
+    - path: /etc/sysctl.d/vm.conf
+      filesystem: root
+      mode: 0644
+      contents:
+        inline: |
+          vm.max_map_count=262144
     - path: /etc/ssh/ssh_host_dsa_key
       filesystem: root
       contents:
