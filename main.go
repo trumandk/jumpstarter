@@ -107,7 +107,6 @@ func dockerInitGit() {
 		fmt.Printf("generate publickeys failed :%s", err)
 		return
 	}
-	//	fmt.Printf("pubkey :%s", publicKeys)
 
 	r, err := git.PlainClone("/git/", false, &git.CloneOptions{
 		URL:      os.Getenv("GIT_CLUSTER"),
@@ -253,7 +252,7 @@ func main() {
 	mux.HandleFunc("/ssh", sshCommand)
 	mux.HandleFunc("/", status)
 	mux.Handle("/files/", http.StripPrefix("/files", fileServer))
-	log.Println("Starting server on :4000")
+	log.Println("Starting server on :80")
 	err := http.ListenAndServe(":80", mux)
 	log.Fatal(err)
 

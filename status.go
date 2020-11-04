@@ -1,10 +1,8 @@
 package main
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/docker/docker/client"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -12,9 +10,8 @@ import (
 )
 
 type Message struct {
-	RAM  string
-	Free string
-	//Free    string
+	RAM     string
+	Free    string
 	CPU     string
 	Dockers int
 	Running int
@@ -41,7 +38,6 @@ func getStat(w http.ResponseWriter, ip string) {
 		return
 	}
 
-	// read all response body
 	data, _ := ioutil.ReadAll(res.Body)
 
 	res.Body.Close()
@@ -49,30 +45,10 @@ func getStat(w http.ResponseWriter, ip string) {
 	var result Message
 	json.Unmarshal([]byte(data), &result)
 	v := reflect.ValueOf(result)
-	//typeOfS := v.Type()
 
 	for i := 0; i < v.NumField(); i++ {
 		fmt.Fprintf(w, "<td>%v</td>", v.Field(i).Interface())
 	}
-}
-
-func dockerStat(w http.ResponseWriter, server string) {
-	ctx := context.Background()
-	cli, err := client.NewClientWithOpts(client.WithHost("tcp://"+server+":2375"), client.WithAPIVersionNegotiation())
-	if err != nil {
-		panic(err)
-	}
-	info, err2 := cli.Info(ctx)
-	if err2 != nil {
-		panic(err2)
-	}
-	fmt.Fprintf(w, "<td>%d</td>", info.Containers)
-	fmt.Fprintf(w, "<td>%d</td>", info.ContainersRunning)
-	fmt.Fprintf(w, "<td>%d</td>", info.ContainersPaused)
-	fmt.Fprintf(w, "<td>%d</td>", info.ContainersStopped)
-	fmt.Fprintf(w, "<td>%d</td>", info.MemTotal)
-	fmt.Fprintf(w, "<td>%s</td>", info.SystemTime)
-
 }
 
 func status(w http.ResponseWriter, req *http.Request) {
@@ -91,13 +67,6 @@ func status(w http.ResponseWriter, req *http.Request) {
 	fmt.Fprintf(w, "<th scope=col>IP</th>")
 	fmt.Fprintf(w, "<th scope=col>Ping</th>")
 	getHeader(w)
-	/*
-		fmt.Fprintf(w, "<th scope=col>Containers</th>")
-		fmt.Fprintf(w, "<th scope=col>Running</th>")
-		fmt.Fprintf(w, "<th scope=col>Paused</th>")
-		fmt.Fprintf(w, "<th scope=col>Stopped</th>")
-		fmt.Fprintf(w, "<th scope=col>MemTotal</th>")
-		fmt.Fprintf(w, "<th scope=col>SystemTime</th>")*/
 	fmt.Fprintf(w, "</tr>")
 	fmt.Fprintf(w, "</thead>")
 	fmt.Fprintf(w, "<tbody>")
@@ -123,7 +92,6 @@ func status(w http.ResponseWriter, req *http.Request) {
 			fmt.Fprintf(w, "<td>%s</td>\n", f.Name())
 			fmt.Fprintf(w, "<td>%s</td>\n", time)
 			if online {
-				//dockerStat(w, f.Name())
 				getStat(w, f.Name())
 			}
 			fmt.Fprintf(w, "</tr>")
