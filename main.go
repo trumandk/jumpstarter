@@ -188,18 +188,19 @@ func dockerGitUpdate() {
 		Auth:       publicKeys,
 		Progress:   os.Stdout,
 	})
-	if err != nil {
-		fmt.Printf("pull :%s", err)
+	if err != nil && err != git.NoErrAlreadyUpToDate {
+		fmt.Printf("pull error :%s", err)
 	}
-	ref, err := r.Head()
-	fmt.Printf("ref :%s", ref)
-	if err != nil {
-		fmt.Printf("head :%s", err)
-	}
+	/*
+		ref, err := r.Head()
+		fmt.Printf("ref :%s", ref)
+		if err != nil {
+			fmt.Printf("head :%s", err)
+		}*/
 }
 
 func dockerRun(ip string, file string) {
-	out, err := exec.Command("/usr/bin/docker-compose", "-p", file, "--env-file", "/git/docker/env", "-H", "ssh://core@"+ip, "-f", "/git/docker/"+file, "up", "-d", "--remove-orphans").CombinedOutput()
+	out, err := exec.Command("/usr/bin/docker-compose", "-p", file, "--log-level", "CRITICAL", "--env-file", "/git/docker/env", "-H", "ssh://core@"+ip, "-f", "/git/docker/"+file, "up", "-d", "--remove-orphans").CombinedOutput()
 
 	if err != nil {
 		fmt.Printf("Error updating:%s Message:%s", ip, err)
@@ -217,7 +218,7 @@ func dockercompose() {
 
 	for _, f := range nodes {
 		if f.Name() != "env" && f.Name() != "all" && dockerOnline(f.Name()) {
-			fmt.Println(f.Name())
+			//	fmt.Println(f.Name())
 			dockerRun(f.Name(), "all")
 			dockerRun(f.Name(), f.Name())
 		}
@@ -245,26 +246,37 @@ func IgnitionFile() string {
 var ignitionFile = IgnitionFile()
 
 func updateIgnitionFile() {
-	pubKeyFile, err := os.Open("/root/.ssh/id_rsa.pub")
-	if err != nil {
-		fmt.Println(err)
-	}
-	pubKey, _ := ioutil.ReadAll(pubKeyFile)
-	jsonFile, err := os.Open("/files/pxe-config.ign")
-	// if we os.Open returns an error then handle it
-	if err != nil {
-		fmt.Println(err)
-	}
+	/*
+		pubKeyFile, err := os.Open("/root/.ssh/id_rsa.pub")
+		if err != nil {
+			fmt.Println(err)
+		}
+		pubKey, _ := ioutil.ReadAll(pubKeyFile)
+		jsonFile, err := os.Open("/files/pxe-config.ign")
+		// if we os.Open returns an error then handle it
+		if err != nil {
+			fmt.Println(err)
+		}
 
-	byteValue, _ := ioutil.ReadAll(jsonFile)
+		byteValue, _ := ioutil.ReadAll(jsonFile)
 
-	value, _ := sjson.Set(string(byteValue), "passwd.users.0.sshAuthorizedKeys.0", string(pubKey))
-	ioutil.WriteFile("/files/pxe-config.ign", []byte(value), os.ModePerm)
-	defer jsonFile.Close()
+		value, _ := sjson.Set(string(byteValue), "passwd.users.0.sshAuthorizedKeys.0", string(pubKey))
+	*/
+	//ioutil.WriteFile("/files/pxe-config.ign", []byte(value), os.ModePerm)
+	ioutil.WriteFile("/files/pxe-config.ign", []byte(ignitionFile), os.ModePerm)
+	//	defer jsonFile.Close()
+}
+
+func ignitionWeb(w http.ResponseWriter, req *http.Request) {
+	value, _ := sjson.Set(ignitionFile, "storage.files.0.contents.source", "http://"+req.Host+"/files/stat")
+	w.Header().Set("Content-Type", "application/json")
+	w.Write([]byte(value))
+	log.Println("Host:%s", req.Host)
+
 }
 
 func main() {
-	updateIgnitionFile()
+	//	updateIgnitionFile()
 	dockerInitGit()
 	go func() {
 		for {
@@ -288,6 +300,7 @@ func main() {
 	mux := http.NewServeMux()
 	fileServer := http.FileServer(http.Dir("/files"))
 	mux.HandleFunc("/ssh", sshCommand)
+	mux.HandleFunc("/ignition", ignitionWeb)
 	mux.HandleFunc("/", status)
 	mux.Handle("/files/", http.StripPrefix("/files", fileServer))
 	log.Println("Starting server on :80")

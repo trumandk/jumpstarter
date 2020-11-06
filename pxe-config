@@ -119,24 +119,6 @@ storage:
         inline: |
           ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBAZlYpXSoyQoDmgmHbw5ryPAJPMMIcEJN452KCDWZRyuCqyzVwqT0coooju5+SNRdUZCuTLozjXAeSMnVSMTi7w= root@localhost
       mode: 0644
-    - path: /etc/ssh/ssh_host_ed25519_key
-      filesystem: root
-      contents:
-        inline: |
-          -----BEGIN OPENSSH PRIVATE KEY-----
-          b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
-          QyNTUxOQAAACA2vO91FqU+Qq8J1ZU3WCQF2cgX7Ji5jusjqTcqEQ0VCQAAAJgWI1kdFiNZ
-          HQAAAAtzc2gtZWQyNTUxOQAAACA2vO91FqU+Qq8J1ZU3WCQF2cgX7Ji5jusjqTcqEQ0VCQ
-          AAAEBEYhULl2wMl6GEYgD/Yx7w1ozJWChH8KtA7gGsFoYDaDa873UWpT5CrwnVlTdYJAXZ
-          yBfsmLmO6yOpNyoRDRUJAAAADnJvb3RAbG9jYWxob3N0AQIDBAUGBw==
-          -----END OPENSSH PRIVATE KEY-----
-      mode: 0600
-    - path: /etc/ssh/ssh_host_ed25519_key.pub
-      filesystem: root
-      contents:
-        inline: |
-          ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDa873UWpT5CrwnVlTdYJAXZyBfsmLmO6yOpNyoRDRUJ root@localhost
-      mode: 0644
     - path: /etc/ssh/ssh_host_rsa_key
       filesystem: root
       contents:
