@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/docker/docker/client"
+	"github.com/docker/docker/api/types"
 	"github.com/shirou/gopsutil/cpu"
 	"github.com/shirou/gopsutil/disk"
 	"github.com/shirou/gopsutil/host"
@@ -28,6 +29,7 @@ type Message struct {
 	Disk     string
 	FreeDisk string
 }
+	var ctx = context.Background()
 
 func status(w http.ResponseWriter, req *http.Request) {
 	v, err := mem.VirtualMemory()
@@ -35,12 +37,11 @@ func status(w http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		fmt.Println("err:", err)
 	}
-	times, err1 := cpu.Percent(0, false)
+	times, err1 := cpu.PercentWithContext(ctx, 0, false)
 	if err1 != nil {
 		log.Fatal(err1)
 	}
 
-	ctx := context.Background()
 	cli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
 
 	if err != nil {
@@ -51,12 +52,12 @@ func status(w http.ResponseWriter, req *http.Request) {
 		panic(err2)
 	}
 
-	infoStat, err3 := host.Info()
+	infoStat, err3 := host.InfoWithContext(ctx)
 	if err3 != nil {
 		panic(err3)
 	}
 
-	usageStat, err4 := disk.Usage("/var/lib/docker")
+	usageStat, err4 := disk.UsageWithContext(ctx,"/var/lib/docker")
 	if err4 != nil {
 		panic(err4)
 	}
@@ -82,6 +83,26 @@ func status(w http.ResponseWriter, req *http.Request) {
 	w.Write(b)
 }
 
+func containers(w http.ResponseWriter, req *http.Request) {
+
+	cli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
+
+	if err != nil {
+		panic(err)
+	}
+
+	containerList, err5 := cli.ContainerList(ctx, types.ContainerListOptions{})
+	if err5 != nil {
+		panic(err5)
+	}
+	b, err := json.MarshalIndent(containerList, "", " ")
+	if err != nil {
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(b)
+}
+
 func main() {
         exec.Command("/bin/mkdir","/var/lib/docker").CombinedOutput()
         out, err2 := exec.Command("/usr/bin/mount","-t","ext4","/dev/sda1","/var/lib/docker").CombinedOutput()
@@ -95,6 +116,7 @@ func main() {
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", status)
+	mux.HandleFunc("/containers", containers)
 	err := http.ListenAndServe(":4", mux)
 	log.Fatal(err)
 }
