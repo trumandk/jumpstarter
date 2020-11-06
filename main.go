@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/go-git/go-git"
 	"github.com/go-git/go-git/plumbing/object"
+	"github.com/go-git/go-git/plumbing/transport"
 	"github.com/go-git/go-git/plumbing/transport/ssh"
 	"github.com/pin/tftp"
 	"github.com/tidwall/sjson"
@@ -17,6 +18,17 @@ import (
 	"strings"
 	"time"
 )
+
+func MyPublicKeys() transport.AuthMethod {
+	publicKeys, err := ssh.NewPublicKeysFromFile("git", "/root/.ssh/id_rsa", "")
+
+	if err != nil {
+		panic(err)
+	}
+	return publicKeys
+}
+
+var publicKeys = MyPublicKeys()
 
 func fileExists(filename string) bool {
 	info, err := os.Stat(filename)
@@ -102,12 +114,6 @@ func dockerInitGit() {
 	if err != nil {
 		fmt.Printf("Remove folder :%s", err)
 	}
-	publicKeys, err := ssh.NewPublicKeysFromFile("git", "/root/.ssh/id_rsa", "")
-
-	if err != nil {
-		fmt.Printf("generate publickeys failed :%s", err)
-		return
-	}
 
 	r, err := git.PlainClone("/git/", false, &git.CloneOptions{
 		URL:      os.Getenv("GIT_CLUSTER"),
@@ -152,12 +158,6 @@ func dockerGitCommit(filename string) {
 	}
 	fmt.Println(obj)
 
-	publicKeys, err := ssh.NewPublicKeysFromFile("git", "/root/.ssh/id_rsa", "")
-
-	if err != nil {
-		fmt.Printf("generate publickeys failed :%s", err)
-		return
-	}
 	err5 := r.Push(&git.PushOptions{
 		RemoteName: "origin",
 		Auth:       publicKeys,
@@ -182,12 +182,7 @@ func dockerGitUpdate() {
 	if err != nil {
 		fmt.Printf("worktree error :%s", err)
 	}
-	publicKeys, err := ssh.NewPublicKeysFromFile("git", "/root/.ssh/id_rsa", "")
 
-	if err != nil {
-		fmt.Printf("generate publickeys failed :%s", err)
-		return
-	}
 	err = w.Pull(&git.PullOptions{
 		RemoteName: "origin",
 		Auth:       publicKeys,
@@ -229,6 +224,25 @@ func dockercompose() {
 	}
 
 }
+func IgnitionFile() string {
+	pubKeyFile, err := os.Open("/root/.ssh/id_rsa.pub")
+	if err != nil {
+		panic(err)
+	}
+	pubKey, _ := ioutil.ReadAll(pubKeyFile)
+	jsonFile, err := os.Open("/files/pxe-config.ign")
+	if err != nil {
+		panic(err)
+	}
+
+	byteValue, _ := ioutil.ReadAll(jsonFile)
+
+	value, _ := sjson.Set(string(byteValue), "passwd.users.0.sshAuthorizedKeys.0", string(pubKey))
+	defer jsonFile.Close()
+	return value
+}
+
+var ignitionFile = IgnitionFile()
 
 func updateIgnitionFile() {
 	pubKeyFile, err := os.Open("/root/.ssh/id_rsa.pub")

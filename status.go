@@ -11,14 +11,16 @@ import (
 
 type Message struct {
 	RAM     string
-	Free    string
-	CPU     string
-	Dockers int
-	Running int
-	Paused  int
-	Stopped int
-	Uptime  string
-	HostID  string
+	FreeRam string
+	//Free    string
+	CPU      string
+	Dockers  int
+	Running  int
+	Paused   int
+	Stopped  int
+	Uptime   string
+	Disk     string
+	FreeDisk string
 }
 
 func getHeader(w http.ResponseWriter) {

