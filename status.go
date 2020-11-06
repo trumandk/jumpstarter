@@ -54,7 +54,11 @@ func getStat(w http.ResponseWriter, ip string) {
 }
 
 func status(w http.ResponseWriter, req *http.Request) {
-	fmt.Fprintf(w, "<head><meta http-equiv=\"refresh\" content=\"5\"></head>")
+	fmt.Fprintf(w, "<head>")
+	fmt.Fprintf(w, "<title>JumpStarter</title>")
+	fmt.Fprintf(w, " <link rel=\"icon\" type=\"image/png\" href=\"files/jumpstarter.png\">")
+	fmt.Fprintf(w, "<meta http-equiv=\"refresh\" content=\"5\">")
+	fmt.Fprintf(w, "</head>")
 	fmt.Fprintf(w, "<link rel=\"stylesheet\" href=\"files/bootstrap.css\">")
 	fmt.Fprintf(w, "<body>")
 	fmt.Fprintf(w, "<center>")

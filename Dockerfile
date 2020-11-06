@@ -46,6 +46,7 @@ COPY --from=tftp /files/flatcar_production_pxe.vmlinuz .
 COPY --from=tftp /files/flatcar_production_pxe_image.cpio.gz .
 COPY pxe-config.ign /
 COPY bootstrap.css .
+COPY jumpstarter.png .
 COPY --from=statBuilder /stat ./stat
 WORKDIR /tftp/
 COPY --from=tftp /usr/share/syslinux/lpxelinux.0 .
