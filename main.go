@@ -66,7 +66,7 @@ func defaultFile(ip string) *bytes.Buffer {
 
 	response += "LABEL flatcar-http\r\n"
 	response += "LINUX http://" + ip + "/files/flatcar_production_pxe.vmlinuz\r\n"
-	response += "APPEND initrd=http://" + ip + "/files/flatcar_production_pxe_image.cpio.gz rootfstype=tmpfs ignition.config.url=http://" + ip + "/files/pxe-config.ign flatcar.first_boot=1 console=tty0 flatcar.autologin=tty1\r\n"
+	response += "APPEND initrd=http://" + ip + "/files/flatcar_production_pxe_image.cpio.gz rootfstype=tmpfs ignition.config.url=http://" + ip + "/ignition flatcar.first_boot=1 console=tty0 flatcar.autologin=tty1\r\n"
 	buf := bytes.NewBufferString(response)
 	return buf
 }
@@ -191,12 +191,6 @@ func dockerGitUpdate() {
 	if err != nil && err != git.NoErrAlreadyUpToDate {
 		fmt.Printf("pull error :%s", err)
 	}
-	/*
-		ref, err := r.Head()
-		fmt.Printf("ref :%s", ref)
-		if err != nil {
-			fmt.Printf("head :%s", err)
-		}*/
 }
 
 func dockerRun(ip string, file string) {
@@ -206,7 +200,9 @@ func dockerRun(ip string, file string) {
 		fmt.Printf("Error updating:%s Message:%s", ip, err)
 	}
 	output := string(out[:])
-	fmt.Println(output)
+	if len(output) > 0 {
+		fmt.Println(output)
+	}
 }
 
 func dockercompose() {
@@ -218,7 +214,6 @@ func dockercompose() {
 
 	for _, f := range nodes {
 		if f.Name() != "env" && f.Name() != "all" && dockerOnline(f.Name()) {
-			//	fmt.Println(f.Name())
 			dockerRun(f.Name(), "all")
 			dockerRun(f.Name(), f.Name())
 		}
@@ -231,7 +226,7 @@ func IgnitionFile() string {
 		panic(err)
 	}
 	pubKey, _ := ioutil.ReadAll(pubKeyFile)
-	jsonFile, err := os.Open("/files/pxe-config.ign")
+	jsonFile, err := os.Open("/pxe-config.ign")
 	if err != nil {
 		panic(err)
 	}
@@ -245,38 +240,15 @@ func IgnitionFile() string {
 
 var ignitionFile = IgnitionFile()
 
-func updateIgnitionFile() {
-	/*
-		pubKeyFile, err := os.Open("/root/.ssh/id_rsa.pub")
-		if err != nil {
-			fmt.Println(err)
-		}
-		pubKey, _ := ioutil.ReadAll(pubKeyFile)
-		jsonFile, err := os.Open("/files/pxe-config.ign")
-		// if we os.Open returns an error then handle it
-		if err != nil {
-			fmt.Println(err)
-		}
-
-		byteValue, _ := ioutil.ReadAll(jsonFile)
-
-		value, _ := sjson.Set(string(byteValue), "passwd.users.0.sshAuthorizedKeys.0", string(pubKey))
-	*/
-	//ioutil.WriteFile("/files/pxe-config.ign", []byte(value), os.ModePerm)
-	ioutil.WriteFile("/files/pxe-config.ign", []byte(ignitionFile), os.ModePerm)
-	//	defer jsonFile.Close()
-}
-
 func ignitionWeb(w http.ResponseWriter, req *http.Request) {
 	value, _ := sjson.Set(ignitionFile, "storage.files.0.contents.source", "http://"+req.Host+"/files/stat")
 	w.Header().Set("Content-Type", "application/json")
 	w.Write([]byte(value))
-	log.Println("Host:%s", req.Host)
+	log.Println("Server PXE booted:", req.Host)
 
 }
 
 func main() {
-	//	updateIgnitionFile()
 	dockerInitGit()
 	go func() {
 		for {

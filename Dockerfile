@@ -44,7 +44,7 @@ RUN apk add --no-cache docker-compose
 WORKDIR /files/
 COPY --from=tftp /files/flatcar_production_pxe.vmlinuz .
 COPY --from=tftp /files/flatcar_production_pxe_image.cpio.gz .
-COPY pxe-config.ign .
+COPY pxe-config.ign /
 COPY bootstrap.css .
 COPY --from=statBuilder /stat ./stat
 WORKDIR /tftp/
