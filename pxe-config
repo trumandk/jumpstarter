@@ -1,3 +1,27 @@
+systemd:
+  units:
+    - name: jumpstarter.service
+      enable: yes
+      mask: false
+      contents: |
+        [Unit]
+        Description=TCG Core Services Daemon
+        
+        [Service]
+        User=tss
+        ExecStart=/bin/sleep 3600
+        
+        [Install]
+        WantedBy=multi-user.target
+    - name: enable-jumpstarter.service
+      enable: true
+      contents: |
+        [Unit]
+        Description=Enable the Docker Socket for the API
+
+        [Service]
+        Type=oneshot
+        ExecStart=/usr/bin/systemctl enable jumpstarter.service
 storage:
   files:
     - path: /etc/ssh/sshd_config
