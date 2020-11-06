@@ -273,6 +273,7 @@ func main() {
 	fileServer := http.FileServer(http.Dir("/files"))
 	mux.HandleFunc("/ssh", sshCommand)
 	mux.HandleFunc("/ignition", ignitionWeb)
+	mux.HandleFunc("/containers", containers)
 	mux.HandleFunc("/", status)
 	mux.Handle("/files/", http.StripPrefix("/files", fileServer))
 	log.Println("Starting server on :80")

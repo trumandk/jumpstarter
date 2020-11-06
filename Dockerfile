@@ -16,6 +16,7 @@ COPY main.go main.go
 COPY ping.go ping.go
 COPY status.go status.go
 COPY remote.go remote.go
+COPY container.go container.go
 #RUN go get -d -v
 RUN CGO_ENABLED=0 go build -o /main
 
