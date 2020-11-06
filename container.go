@@ -36,6 +36,11 @@ func getContainer(w http.ResponseWriter, ip string) {
 			fmt.Fprintf(w, "%v ", name)
 		}
 		fmt.Fprintf(w, "</td>")
+		fmt.Fprintf(w, "<td>")
+		for _, port := range container.Ports {
+			fmt.Fprintf(w, "<a href=http://%s:%v>%v</a>:%v:%v ", ip, port.PublicPort, port.PublicPort, port.PrivatePort, port.Type)
+		}
+		fmt.Fprintf(w, "</td>")
 		fmt.Fprintf(w, "<td>%v</td>", container.Image)
 		fmt.Fprintf(w, "<td>%v</td>", container.State)
 		fmt.Fprintf(w, "<td>%v</td>", container.Status)
@@ -63,6 +68,7 @@ func containers(w http.ResponseWriter, req *http.Request) {
 	fmt.Fprintf(w, "<tr>")
 	fmt.Fprintf(w, "<th scope=col>IP</th>")
 	fmt.Fprintf(w, "<th scope=col>Name</th>")
+	fmt.Fprintf(w, "<th scope=col>Port</th>")
 	fmt.Fprintf(w, "<th scope=col>Image</th>")
 	fmt.Fprintf(w, "<th scope=col>State</th>")
 	fmt.Fprintf(w, "<th scope=col>Status</th>")
