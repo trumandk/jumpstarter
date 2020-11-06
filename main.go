@@ -7,6 +7,7 @@ import (
 	"github.com/go-git/go-git/plumbing/object"
 	"github.com/go-git/go-git/plumbing/transport/ssh"
 	"github.com/pin/tftp"
+	"github.com/tidwall/sjson"
 	"io"
 	"io/ioutil"
 	"log"
@@ -202,6 +203,16 @@ func dockerGitUpdate() {
 	}
 }
 
+func dockerRun(ip string, file string) {
+	out, err := exec.Command("/usr/bin/docker-compose", "-p", file, "--env-file", "/git/docker/env", "-H", "ssh://core@"+ip, "-f", "/git/docker/"+file, "up", "-d", "--remove-orphans").CombinedOutput()
+
+	if err != nil {
+		fmt.Printf("Error updating:%s Message:%s", ip, err)
+	}
+	output := string(out[:])
+	fmt.Println(output)
+}
+
 func dockercompose() {
 
 	nodes, err := ioutil.ReadDir("/git/docker/")
@@ -212,21 +223,34 @@ func dockercompose() {
 	for _, f := range nodes {
 		if f.Name() != "env" && f.Name() != "all" && dockerOnline(f.Name()) {
 			fmt.Println(f.Name())
-
-			out, err := exec.Command("/usr/bin/docker-compose", "-p", f.Name(), "--env-file", "/git/docker/env", "-H", "ssh://core@"+f.Name(), "-f", "/git/docker/"+f.Name(), "-f", "/git/docker/all", "up", "-d", "--remove-orphans").CombinedOutput()
-
-			if err != nil {
-				fmt.Printf("Error updating:%s Message:%s", f.Name(), err)
-			}
-			output := string(out[:])
-			fmt.Println(output)
+			dockerRun(f.Name(), "all")
+			dockerRun(f.Name(), f.Name())
 		}
 	}
 
 }
 
-func main() {
+func updateIgnitionFile() {
+	pubKeyFile, err := os.Open("/root/.ssh/id_rsa.pub")
+	if err != nil {
+		fmt.Println(err)
+	}
+	pubKey, _ := ioutil.ReadAll(pubKeyFile)
+	jsonFile, err := os.Open("/files/pxe-config.ign")
+	// if we os.Open returns an error then handle it
+	if err != nil {
+		fmt.Println(err)
+	}
 
+	byteValue, _ := ioutil.ReadAll(jsonFile)
+
+	value, _ := sjson.Set(string(byteValue), "passwd.users.0.sshAuthorizedKeys.0", string(pubKey))
+	ioutil.WriteFile("/files/pxe-config.ign", []byte(value), os.ModePerm)
+	defer jsonFile.Close()
+}
+
+func main() {
+	updateIgnitionFile()
 	dockerInitGit()
 	go func() {
 		for {

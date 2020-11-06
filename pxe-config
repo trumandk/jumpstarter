@@ -154,7 +154,7 @@ storage:
       filesystem: root
       contents:
         inline: |
-          ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDXfewFQ0sXXrlurYhjKyGiCw2zTU77y39x3e9N0C70L+sUcYUgQdXwPTZtXbuezhSSUfU7Pl3eD8OFW9lFEiXQndQRZj9Iu98nQJJ/33ASvFwDVbhj84ortlxKia+S+k8cEwZikGdfDGqXUgP7d48Ct7BW2Hpu+D1ktM0D8UQua3k2J3+Ji5eJ04+aNKx3byjbGmF5tI3HkAqT/Kawy+Zhq4bKFZdHnK8JDl6mkuI7e3Sf8bQESJW2iXKAChYyBUMlPXAamc3Ol8tSUrJ1TkDUZOJdWbBLK9XJ6QJJjTxYUkG+MFAV90RbZ757Uon83pzpYF0lJG0BO923pKKaXgB8TkCq9vEAJLKA0RkFaj/9JShfzJ4UPvAc7SqWbWUs733Yk1BiwrFquoDrwrxR6Q3c/4fVvGuMrzSmBufUMH2YfhHn7WMKTaQ+Lkp4WH2aHx9aQAkVZipA9JGtoaGf5ohsXPQcdFWNpyQotiz6SLLyRnT26lzgMK8LQqp0Pi1l05M= root@localhost
+          ssh-rsa REPLACE-ME
       mode: 0644
 
 passwd:

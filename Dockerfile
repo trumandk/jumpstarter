@@ -8,6 +8,7 @@ RUN go get github.com/pin/tftp
 RUN go get github.com/go-git/go-git
 RUN go get github.com/sparrc/go-ping
 RUN go get github.com/docker/docker/client
+RUN go get github.com/tidwall/sjson
 
 #RUN go get github.com/miekg/dns
 #RUN go get github.com/sparrc/go-ping
