@@ -9,6 +9,7 @@ RUN go get github.com/go-git/go-git
 RUN go get github.com/sparrc/go-ping
 RUN go get github.com/docker/docker/client
 RUN go get github.com/tidwall/sjson
+RUN go get github.com/shirou/gopsutil
 
 #RUN go get github.com/miekg/dns
 #RUN go get github.com/sparrc/go-ping
@@ -18,6 +19,7 @@ COPY ping.go ping.go
 COPY servers.go servers.go
 COPY remote.go remote.go
 COPY container.go container.go
+COPY stat/status.go status.go
 #RUN go get -d -v
 RUN CGO_ENABLED=0 go build -o /main
 
@@ -31,6 +33,7 @@ RUN go get golang.org/x/sys/unix
 RUN go get github.com/docker/docker/client
 RUN go get github.com/shirou/gopsutil/cpu
 COPY JumpStarterStatus.go JumpStarterStatus.go
+COPY stat/status.go status.go
 COPY stat/stat.go stat.go
 RUN CGO_ENABLED=0 go build -o /stat
 

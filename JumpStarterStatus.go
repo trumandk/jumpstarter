@@ -12,6 +12,7 @@ type JumpStarterStatus struct {
 	Paused   int
 	Stopped  int
 	Uptime   string
+	Platform string
 	Disk     string
 	FreeDisk string
 }
