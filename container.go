@@ -30,6 +30,7 @@ func getContainer(w http.ResponseWriter, ip string) {
 		} else {
 			fmt.Fprintf(w, "<tr class=\"table-danger\">\n")
 		}
+		fmt.Fprintf(w, "<td><a href=\"/ssh?ip=%s&command=sudo docker restart %s\" class=\"btn btn-warning\">Restart</td>", ip, container.ID)
 		fmt.Fprintf(w, "<td>%v</td>", ip)
 		fmt.Fprintf(w, "<td>")
 		for _, name := range container.Names {
@@ -68,6 +69,7 @@ func containers(w http.ResponseWriter, req *http.Request) {
 	fmt.Fprintf(w, "<table class=\"table table-hover\">")
 	fmt.Fprintf(w, "<thead>")
 	fmt.Fprintf(w, "<tr>")
+	fmt.Fprintf(w, "<th scope=col></th>")
 	fmt.Fprintf(w, "<th scope=col>IP</th>")
 	fmt.Fprintf(w, "<th scope=col>Name</th>")
 	fmt.Fprintf(w, "<th scope=col>Port</th>")
