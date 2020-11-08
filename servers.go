@@ -35,7 +35,12 @@ func getStat(w http.ResponseWriter, ip string) {
 	v := reflect.ValueOf(result)
 
 	for i := 0; i < v.NumField(); i++ {
-		fmt.Fprintf(w, "<td>%v</td>", v.Field(i).Interface())
+		if result.Running > 0 {
+			fmt.Fprintf(w, "<td>\n")
+		} else {
+			fmt.Fprintf(w, "<td style=\"background-color:#cce5ff\">\n")
+		}
+		fmt.Fprintf(w, "%v</td>", v.Field(i).Interface())
 	}
 }
 func menu(w http.ResponseWriter, req *http.Request) {

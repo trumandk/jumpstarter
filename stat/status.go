@@ -66,5 +66,6 @@ func status(w http.ResponseWriter, req *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(b)
+	 defer req.Body.Close()
 }
 
