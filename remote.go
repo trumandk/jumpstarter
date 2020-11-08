@@ -14,14 +14,30 @@ func sshCommand(w http.ResponseWriter, req *http.Request) {
 	if commandok && ipok {
 		command := commands[0]
 		ip := ips[0]
-		commandSSH(ip, command)
+		go func() {
+			client, session, err := connectToHost("core", ip+":22")
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+			out, err := session.CombinedOutput(command)
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+			fmt.Println(string(out))
+			client.Close()
+		}()
 		http.Redirect(w, req, "/", 304)
 	}
 }
+func sshCommandOutput(w http.ResponseWriter, req *http.Request) {
+	commands, commandok := req.URL.Query()["command"]
+	ips, ipok := req.URL.Query()["ip"]
 
-func commandSSH(ip string, command string) {
-
-	go func() {
+	if commandok && ipok {
+		command := commands[0]
+		ip := ips[0]
 		client, session, err := connectToHost("core", ip+":22")
 		if err != nil {
 			fmt.Println(err)
@@ -32,10 +48,10 @@ func commandSSH(ip string, command string) {
 			fmt.Println(err)
 			return
 		}
-		fmt.Println(string(out))
+		//fmt.Println(string(out))
+		w.Write([]byte(out))
 		client.Close()
-	}()
-
+	}
 }
 
 func PublicKeyFile(file string) ssh.AuthMethod {

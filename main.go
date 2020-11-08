@@ -272,6 +272,7 @@ func main() {
 	mux := http.NewServeMux()
 	fileServer := http.FileServer(http.Dir("/files"))
 	mux.HandleFunc("/ssh", sshCommand)
+	mux.HandleFunc("/sshout", sshCommandOutput)
 	mux.HandleFunc("/ignition", ignitionWeb)
 	mux.HandleFunc("/containers", containers)
 	mux.HandleFunc("/status", status)
