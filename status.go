@@ -52,22 +52,30 @@ func getStat(w http.ResponseWriter, ip string) {
 		fmt.Fprintf(w, "<td>%v</td>", v.Field(i).Interface())
 	}
 }
-
-func status(w http.ResponseWriter, req *http.Request) {
+func menu(w http.ResponseWriter, req *http.Request) {
 	fmt.Fprintf(w, "<head>")
 	fmt.Fprintf(w, "<title>JumpStarter</title>")
 	fmt.Fprintf(w, " <link rel=\"icon\" type=\"image/png\" href=\"files/jumpstarter.png\">")
 	fmt.Fprintf(w, "<meta http-equiv=\"refresh\" content=\"5\">")
 	fmt.Fprintf(w, "</head>")
 	fmt.Fprintf(w, "<link rel=\"stylesheet\" href=\"files/bootstrap.css\">")
+	fmt.Fprintf(w, "<script src=\"files/bootstrap.js\"></script>")
 	fmt.Fprintf(w, "<body>")
+	fmt.Fprintf(w, "<nav class=\"navbar navbar-expand-lg navbar-dark bg-dark\">")
+	fmt.Fprintf(w, "<a class=\"navbar-brand\" href=\"/\">Servers</a>")
+	fmt.Fprintf(w, "<a class=\"navbar-brand\" href=\"/containers\">Containers</a>")
+	fmt.Fprintf(w, "</nav>")
+
+}
+func status(w http.ResponseWriter, req *http.Request) {
+	menu(w, req)
 	fmt.Fprintf(w, "<center>")
 	nodes, err := ioutil.ReadDir("/git/docker/")
 	if err != nil {
 		log.Fatal(err)
 	}
 	fmt.Fprintf(w, "<table class=\"table table-hover\">")
-	fmt.Fprintf(w, "<thead class=\"thead-dark\">")
+	fmt.Fprintf(w, "<thead>")
 	fmt.Fprintf(w, "<tr>")
 	fmt.Fprintf(w, "<th scope=col></th>")
 	fmt.Fprintf(w, "<th scope=col>IP</th>")

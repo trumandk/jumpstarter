@@ -46,8 +46,9 @@ WORKDIR /files/
 COPY --from=tftp /files/flatcar_production_pxe.vmlinuz .
 COPY --from=tftp /files/flatcar_production_pxe_image.cpio.gz .
 COPY pxe-config.ign /
-COPY bootstrap.css .
+COPY bootstrap/ .
 COPY jumpstarter.png .
+RUN apk add --no-cache vim
 COPY --from=statBuilder /stat ./stat
 WORKDIR /tftp/
 COPY --from=tftp /usr/share/syslinux/lpxelinux.0 .

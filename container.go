@@ -51,20 +51,22 @@ func getContainer(w http.ResponseWriter, ip string) {
 }
 
 func containers(w http.ResponseWriter, req *http.Request) {
-
-	fmt.Fprintf(w, "<head>")
-	fmt.Fprintf(w, "<title>JumpStarter</title>")
-	fmt.Fprintf(w, " <link rel=\"icon\" type=\"image/png\" href=\"files/jumpstarter.png\">")
-	fmt.Fprintf(w, "</head>")
-	fmt.Fprintf(w, "<link rel=\"stylesheet\" href=\"files/bootstrap.css\">")
-	fmt.Fprintf(w, "<body>")
+	menu(w, req)
+	/*
+		fmt.Fprintf(w, "<head>")
+		fmt.Fprintf(w, "<title>JumpStarter</title>")
+		fmt.Fprintf(w, " <link rel=\"icon\" type=\"image/png\" href=\"files/jumpstarter.png\">")
+		fmt.Fprintf(w, "</head>")
+		fmt.Fprintf(w, "<link rel=\"stylesheet\" href=\"files/css/bootstrap.css\">")
+		fmt.Fprintf(w, "<body>")
+	*/
 	fmt.Fprintf(w, "<center>")
 	nodes, err := ioutil.ReadDir("/git/docker/")
 	if err != nil {
 		log.Fatal(err)
 	}
 	fmt.Fprintf(w, "<table class=\"table table-hover\">")
-	fmt.Fprintf(w, "<thead class=\"thead-dark\">")
+	fmt.Fprintf(w, "<thead>")
 	fmt.Fprintf(w, "<tr>")
 	fmt.Fprintf(w, "<th scope=col>IP</th>")
 	fmt.Fprintf(w, "<th scope=col>Name</th>")
