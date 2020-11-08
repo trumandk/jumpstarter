@@ -274,7 +274,7 @@ func main() {
 	mux.HandleFunc("/ssh", sshCommand)
 	mux.HandleFunc("/ignition", ignitionWeb)
 	mux.HandleFunc("/containers", containers)
-	mux.HandleFunc("/", status)
+	mux.HandleFunc("/", servers)
 	mux.Handle("/files/", http.StripPrefix("/files", fileServer))
 	log.Println("Starting server on :80")
 	err := http.ListenAndServe(":80", mux)

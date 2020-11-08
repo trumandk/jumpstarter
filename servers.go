@@ -9,22 +9,8 @@ import (
 	"reflect"
 )
 
-type Message struct {
-	RAM     string
-	FreeRam string
-	//Free    string
-	CPU      string
-	Dockers  int
-	Running  int
-	Paused   int
-	Stopped  int
-	Uptime   string
-	Disk     string
-	FreeDisk string
-}
-
 func getHeader(w http.ResponseWriter) {
-	var result Message
+	var result JumpStarterStatus
 	v := reflect.ValueOf(result)
 	typeOfS := v.Type()
 
@@ -44,7 +30,7 @@ func getStat(w http.ResponseWriter, ip string) {
 
 	res.Body.Close()
 
-	var result Message
+	var result JumpStarterStatus
 	json.Unmarshal([]byte(data), &result)
 	v := reflect.ValueOf(result)
 
@@ -67,7 +53,7 @@ func menu(w http.ResponseWriter, req *http.Request) {
 	fmt.Fprintf(w, "</nav>")
 
 }
-func status(w http.ResponseWriter, req *http.Request) {
+func servers(w http.ResponseWriter, req *http.Request) {
 	menu(w, req)
 	fmt.Fprintf(w, "<center>")
 	nodes, err := ioutil.ReadDir("/git/docker/")

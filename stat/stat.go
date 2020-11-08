@@ -15,20 +15,6 @@ import (
 	"os/exec"
 	"time"
 )
-
-type Message struct {
-	RAM     string
-	FreeRam string
-	//Free    string
-	CPU      string
-	Dockers  int
-	Running  int
-	Paused   int
-	Stopped  int
-	Uptime   string
-	Disk     string
-	FreeDisk string
-}
 	var ctx = context.Background()
 
 func status(w http.ResponseWriter, req *http.Request) {
@@ -62,7 +48,7 @@ func status(w http.ResponseWriter, req *http.Request) {
 		panic(err4)
 	}
 
-	m := Message{
+	m := JumpStarterStatus{
 		fmt.Sprintf("%.2fGB", float64(v.Total)/1000000000),
 		fmt.Sprintf("%.2fGB", float64(v.Available)/1000000000),
 		//fmt.Sprintf("%.2f%%", float64(float64(v.Available/1000000)/float64(v.Total/1000000))*100),
