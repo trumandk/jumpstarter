@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"crypto/subtle"
 	"fmt"
 	"github.com/go-git/go-git"
 	"github.com/go-git/go-git/plumbing/object"
@@ -29,6 +30,8 @@ func MyPublicKeys() transport.AuthMethod {
 }
 
 var publicKeys = MyPublicKeys()
+var username = os.Getenv("JUMPSTARTER_USERNAME")
+var password = os.Getenv("JUMPSTARTER_PASSWORD")
 
 func fileExists(filename string) bool {
 	info, err := os.Stat(filename)
@@ -205,6 +208,18 @@ func dockerRun(ip string, file string) {
 	}
 }
 
+func dockerClean(ip string, file string) {
+	out, err := exec.Command("/usr/bin/docker-compose", "-p", file, "--log-level", "CRITICAL", "-H", "ssh://core@"+ip).CombinedOutput()
+
+	if err != nil {
+		fmt.Printf("Error updating:%s Message:%s", ip, err)
+	}
+	output := string(out[:])
+	if len(output) > 0 {
+		fmt.Println(output)
+	}
+}
+
 func dockercompose() {
 
 	nodes, err := ioutil.ReadDir("/git/docker/")
@@ -248,7 +263,27 @@ func ignitionWeb(w http.ResponseWriter, req *http.Request) {
 
 }
 
+func BasicAuth(handler http.HandlerFunc) http.HandlerFunc {
+	realm := "Please enter your username and password for this site"
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		user, pass, ok := r.BasicAuth()
+
+		if !ok || subtle.ConstantTimeCompare([]byte(user), []byte(username)) != 1 || subtle.ConstantTimeCompare([]byte(pass), []byte(password)) != 1 {
+			w.Header().Set("WWW-Authenticate", `Basic realm="`+realm+`"`)
+			w.WriteHeader(401)
+			w.Write([]byte("Unauthorised.\n"))
+			return
+		}
+
+		handler(w, r)
+	}
+}
+
 func main() {
+	if len(username) == 0 || len(password) == 0 {
+		panic("JUMPSTARTER_USERNAME or JUMPSTARTER_PASSWORD empty!!!")
+	}
 	dockerInitGit()
 	go func() {
 		for {
@@ -271,12 +306,12 @@ func main() {
 
 	mux := http.NewServeMux()
 	fileServer := http.FileServer(http.Dir("/files"))
-	mux.HandleFunc("/ssh", sshCommand)
-	mux.HandleFunc("/sshout", sshCommandOutput)
+	mux.HandleFunc("/ssh", BasicAuth(sshCommand))
+	mux.HandleFunc("/sshout", BasicAuth(sshCommandOutput))
 	mux.HandleFunc("/ignition", ignitionWeb)
-	mux.HandleFunc("/containers", containers)
-	mux.HandleFunc("/status", status)
-	mux.HandleFunc("/", servers)
+	mux.HandleFunc("/containers", BasicAuth(containers))
+	mux.HandleFunc("/status", BasicAuth(status))
+	mux.HandleFunc("/", BasicAuth(servers))
 	mux.Handle("/files/", http.StripPrefix("/files", fileServer))
 	log.Println("Starting server on :80")
 	err := http.ListenAndServe(":80", mux)
