@@ -76,11 +76,11 @@ func defaultFile(ip string) *bytes.Buffer {
 
 func readHandler(filename string, r io.ReaderFrom) error {
 
-	fmt.Printf("open: %s\n", filename)
+	//	fmt.Printf("open: %s\n", filename)
 	if strings.Contains(filename, "default") {
 		ip := r.(tftp.RequestPacketInfo).LocalIP().String()
 		ipRemote := r.(tftp.OutgoingTransfer).RemoteAddr()
-		fmt.Printf("Generate default with ip:%s \n", ip)
+		fmt.Printf("TFTP-Server: Generated default for ip:%s \n", ip)
 		n, err := r.ReadFrom(defaultFile(ip))
 		checkDockerExist(ipRemote.IP.String())
 		if err != nil {
@@ -93,7 +93,7 @@ func readHandler(filename string, r io.ReaderFrom) error {
 	file, err := os.Open(filename)
 
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "%v\n", err)
+		//	fmt.Fprintf(os.Stderr, "%v\n", err)
 		return err
 	}
 
@@ -103,12 +103,12 @@ func readHandler(filename string, r io.ReaderFrom) error {
 		}
 	}
 
-	n, err := r.ReadFrom(file)
+	_, err = r.ReadFrom(file)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "%v\n", err)
 		return err
 	}
-	fmt.Printf("%d bytes sent\n", n)
+	//fmt.Printf("%d bytes sent\n", n)
 	return nil
 }
 
@@ -312,6 +312,7 @@ func main() {
 	mux.HandleFunc("/containers", BasicAuth(containers))
 	mux.HandleFunc("/status", BasicAuth(status))
 	mux.HandleFunc("/", BasicAuth(servers))
+	mux.HandleFunc("/git", BasicAuth(gitWeb))
 	mux.Handle("/files/", http.StripPrefix("/files", fileServer))
 	log.Println("Starting server on :80")
 	err := http.ListenAndServe(":80", mux)

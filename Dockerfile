@@ -16,6 +16,7 @@ RUN go get github.com/shirou/gopsutil
 COPY JumpStarterStatus.go JumpStarterStatus.go
 COPY main.go main.go
 COPY ping.go ping.go
+COPY git.go git.go
 COPY servers.go servers.go
 COPY remote.go remote.go
 COPY container.go container.go

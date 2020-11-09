@@ -55,6 +55,7 @@ func menu(w http.ResponseWriter, req *http.Request) {
 	fmt.Fprintf(w, "<nav class=\"navbar navbar-expand-lg navbar-dark bg-dark\">")
 	fmt.Fprintf(w, "<a class=\"navbar-brand\" href=\"/\">Servers</a>")
 	fmt.Fprintf(w, "<a class=\"navbar-brand\" href=\"/containers\">Containers</a>")
+	fmt.Fprintf(w, "<a class=\"navbar-brand\" href=\"/git\">Git</a>")
 	fmt.Fprintf(w, "</nav>")
 
 }
