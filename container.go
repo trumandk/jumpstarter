@@ -41,7 +41,7 @@ func getContainer(w http.ResponseWriter, ip string) {
 		fmt.Fprintf(w, "</td>")
 		fmt.Fprintf(w, "<td>")
 		for _, port := range container.Ports {
-			fmt.Fprintf(w, "<a href=http://%s:%v>%v</a>:%v:%v ", ip, port.PublicPort, port.PublicPort, port.PrivatePort, port.Type)
+			fmt.Fprintf(w, "<a href=http://%s:%v target=\"_blank\">%v</a>:%v:%v ", ip, port.PublicPort, port.PublicPort, port.PrivatePort, port.Type)
 		}
 		fmt.Fprintf(w, "</td>")
 		fmt.Fprintf(w, "<td>%v</td>", container.Image)
