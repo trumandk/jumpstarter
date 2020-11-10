@@ -8,7 +8,7 @@ import (
 	"log"
 	"net/http"
 	"strings"
-	"time"
+	//"time"
 )
 
 func getContainer(w http.ResponseWriter, ip string) {
@@ -30,7 +30,8 @@ func getContainer(w http.ResponseWriter, ip string) {
 		} else {
 			fmt.Fprintf(w, "<tr class=\"table-danger\">\n")
 		}
-		fmt.Fprintf(w, "<td><a href=\"/ssh?ip=%s&command=sudo docker restart %s\" class=\"btn btn-warning\">Restart</td>", ip, container.ID)
+		fmt.Fprintf(w, "<td><a href=\"/ssh?ip=%s&command=sudo docker restart %s\" class=\"btn btn-warning\">Restart</a>", ip, container.ID)
+		fmt.Fprintf(w, "<a href=\"/ssh?ip=%s&command=sudo docker pull %s\" class=\"btn btn-warning\">RePull</a></td>", ip, container.Image)
 		fmt.Fprintf(w, "<td>%v</td>", ip)
 		fmt.Fprintf(w, "<td>")
 		fmt.Fprintf(w, "<a href=\"/sshout?ip=%s&command=sudo docker logs --tail 500 %s\" target=\"_blank\">", ip, container.ID)
@@ -55,7 +56,7 @@ func getContainer(w http.ResponseWriter, ip string) {
 		fmt.Fprintf(w, "<td>%v</td>", container.Image)
 		fmt.Fprintf(w, "<td>%v</td>", container.State)
 		fmt.Fprintf(w, "<td>%v</td>", container.Status)
-		fmt.Fprintf(w, "<td>%s</td>", time.Unix(container.Created, 0))
+		//fmt.Fprintf(w, "<td>%s</td>", time.Unix(container.Created, 0))
 
 		fmt.Fprintf(w, "</tr>")
 	}
@@ -87,7 +88,7 @@ func containers(w http.ResponseWriter, req *http.Request) {
 	fmt.Fprintf(w, "<th scope=col>Image</th>")
 	fmt.Fprintf(w, "<th scope=col>State</th>")
 	fmt.Fprintf(w, "<th scope=col>Status</th>")
-	fmt.Fprintf(w, "<th scope=col>Created</th>")
+	//fmt.Fprintf(w, "<th scope=col>Created</th>")
 	//getHeader(w)
 	fmt.Fprintf(w, "</tr>")
 	fmt.Fprintf(w, "</thead>")
