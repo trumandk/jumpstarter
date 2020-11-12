@@ -31,7 +31,7 @@ func getContainer(w http.ResponseWriter, ip string) {
 			fmt.Fprintf(w, "<tr class=\"table-danger\">\n")
 		}
 		fmt.Fprintf(w, "<td><a href=\"/ssh?ip=%s&command=sudo docker restart %s\" class=\"btn btn-warning\">Restart</a>", ip, container.ID)
-		fmt.Fprintf(w, "<a href=\"/ssh?ip=%s&command=sudo docker pull %s\" class=\"btn btn-warning\">RePull</a></td>", ip, container.Image)
+		fmt.Fprintf(w, " <a href=\"/ssh?ip=%s&command=sudo docker pull %s\" class=\"btn btn-warning\">RePull</a></td>", ip, container.Image)
 		fmt.Fprintf(w, "<td>%v</td>", ip)
 		fmt.Fprintf(w, "<td>")
 		fmt.Fprintf(w, "<a href=\"/sshout?ip=%s&command=sudo docker logs --tail 500 %s\" target=\"_blank\">", ip, container.ID)

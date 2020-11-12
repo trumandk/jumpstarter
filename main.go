@@ -197,27 +197,27 @@ func dockerGitUpdate() {
 }
 
 func dockerRun(ip string, file string) {
-	out, err := exec.Command("/usr/bin/docker-compose", "-p", file, "--log-level", "CRITICAL", "--env-file", "/git/docker/env", "-H", "ssh://core@"+ip, "-f", "/git/docker/"+file, "up", "-d", "--remove-orphans").CombinedOutput()
+	out, err := exec.Command("/usr/bin/docker-compose", "--compatibility", "-p", file, "--env-file", "/git/docker/env", "-H", "ssh://core@"+ip, "-f", "/git/docker/"+file, "up", "-d", "--remove-orphans").CombinedOutput()
 
 	if err != nil {
 		fmt.Printf("Error updating:%s Message:%s", ip, err)
 	}
 	output := string(out[:])
-	if len(output) > 0 {
-		fmt.Println(output)
-	}
+	//	if len(output) > 0 {
+	fmt.Println(output)
+	//	}
 }
 
 func dockerClean(ip string, file string) {
-	out, err := exec.Command("/usr/bin/docker-compose", "-p", file, "--log-level", "CRITICAL", "-H", "ssh://core@"+ip).CombinedOutput()
+	out, err := exec.Command("/usr/bin/docker-compose", "-p", file, "-H", "ssh://core@"+ip).CombinedOutput()
 
 	if err != nil {
 		fmt.Printf("Error updating:%s Message:%s", ip, err)
 	}
 	output := string(out[:])
-	if len(output) > 0 {
-		fmt.Println(output)
-	}
+	//	if len(output) > 0 {
+	fmt.Println(output)
+	//	}
 }
 
 func dockercompose() {
@@ -229,6 +229,8 @@ func dockercompose() {
 
 	for _, f := range nodes {
 		if f.Name() != "env" && f.Name() != "all" && dockerOnline(f.Name()) {
+			fmt.Printf("docker-compose :%s\n", f.Name())
+
 			dockerRun(f.Name(), "all")
 			dockerRun(f.Name(), f.Name())
 		}
